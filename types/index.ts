@@ -2,9 +2,15 @@ export type Language = "zh" | "en";
 
 export type Theme = "light" | "dark";
 
-export type TaskStatus = "todo" | "doing" | "done";
+export type TaskStatus =
+  | "TODO"
+  | "DOING"
+  | "DONE";
 
-export type Priority = "high" | "medium" | "low";
+export type Priority =
+  | "HIGH"
+  | "MEDIUM"
+  | "LOW";
 
 export interface Project {
   id: string;
@@ -33,9 +39,7 @@ export interface Task {
 
   title: string;
 
-  projectId: string;
-
-  phaseId: string;
+  description?: string | null;
 
   status: TaskStatus;
 
@@ -43,13 +47,17 @@ export interface Task {
 
   order: number;
 
-  estimatedHours: number;
+  estimated: number;
 
-  actualHours: number;
+  actual: number;
 
-  dueDate?: string;
+  dueDate?: string | null;
+
+  projectId: string;
 
   createdAt: string;
+
+  updatedAt: string;
 }
 
 export interface UserPreferences {

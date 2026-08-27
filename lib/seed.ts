@@ -11,10 +11,10 @@ export const seedProjects: Project[] = [
 ];
 
 export const seedTasks: Task[] = [
-  { id: "1", title: "Time100 dashboard MVP", projectId: "time100", phaseId: "t1", status: "doing", priority: "high", order: 0, estimatedHours: 6, actualHours: 2, dueDate: "", createdAt: new Date().toISOString() },
-  { id: "2", title: "YueziCanada remove remaining 404 pages", projectId: "yuezicanada", phaseId: "y1", status: "todo", priority: "high", order: 0, estimatedHours: 4, actualHours: 0, dueDate: "", createdAt: new Date().toISOString() },
-  { id: "3", title: "JiahuaMeal package pricing and $100 deposit", projectId: "jiahuameal", phaseId: "j1", status: "todo", priority: "high", order: 1, estimatedHours: 12, actualHours: 0, dueDate: "", createdAt: new Date().toISOString() },
-  { id: "4", title: "YueziCanada logo, header and favicon", projectId: "yuezicanada", phaseId: "y1", status: "done", priority: "medium", order: 0, estimatedHours: 4, actualHours: 5, dueDate: "", createdAt: new Date().toISOString() },
+  { id: "1", title: "Time100 dashboard MVP", projectId: "time100", phaseId: "t1", status: "DOING", priority: "high", order: 0, estimated: 6, actual: 2, dueDate: "", createdAt: new Date().toISOString() },
+  { id: "2", title: "YueziCanada remove remaining 404 pages", projectId: "yuezicanada", phaseId: "y1", status: "TODO", priority: "high", order: 0, estimated: 4, actual: 0, dueDate: "", createdAt: new Date().toISOString() },
+  { id: "3", title: "JiahuaMeal package pricing and $100 deposit", projectId: "jiahuameal", phaseId: "j1", status: "TODO", priority: "high", order: 1, estimated: 12, actual: 0, dueDate: "", createdAt: new Date().toISOString() },
+  { id: "4", title: "YueziCanada logo, header and favicon", projectId: "yuezicanada", phaseId: "y1", status: "DONE", priority: "medium", order: 0, estimated: 4, actual: 5, dueDate: "", createdAt: new Date().toISOString() },
 ];
 
 export const defaultPreferences: UserPreferences = {

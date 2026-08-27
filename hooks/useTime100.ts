@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { defaultPreferences, seedTasks } from "@/lib/seed";
+import { defaultPreferences } from "@/lib/seed";
 import type {
   Priority,
   Project,
@@ -14,9 +14,9 @@ const TASKS_KEY = "time100-tasks-v1";
 const SETTINGS_KEY = "time100-settings-v1";
 
 const priorityWeight: Record<Priority, number> = {
-  high: 0,
-  medium: 1,
-  low: 2,
+  HIGH: 0,
+  MEDIUM: 1,
+  LOW: 2,
 };
 
 export function useTime100() {
@@ -24,7 +24,7 @@ export function useTime100() {
 
   const [projects, setProjects] = useState<Project[]>([]);
 
-  const [tasks, setTasks] = useState<Task[]>(seedTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const [preferences, setPreferences] =
     useState<UserPreferences>(defaultPreferences);
@@ -41,14 +41,22 @@ export function useTime100() {
       }
     }
 
-    loadProjects();
+    async function loadTasks() {
+      try {
+        const res = await fetch("/api/tasks");
+        const data = await res.json();
 
-    const storedTasks = localStorage.getItem(TASKS_KEY);
-    const storedSettings = localStorage.getItem(SETTINGS_KEY);
-
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
+        setTasks(data);
+      } catch (error) {
+        console.error("Failed to load tasks", error);
+      }
     }
+
+    loadProjects();
+    loadTasks();
+
+    const storedSettings =
+      localStorage.getItem(SETTINGS_KEY);
 
     if (storedSettings) {
       setPreferences(JSON.parse(storedSettings));
@@ -56,12 +64,6 @@ export function useTime100() {
 
     setReady(true);
   }, []);
-
-  useEffect(() => {
-    if (ready) {
-      localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
-    }
-  }, [ready, tasks]);
 
   useEffect(() => {
     if (ready) {
@@ -75,7 +77,7 @@ export function useTime100() {
   function addTask(
     input: Omit<
       Task,
-      "id" | "createdAt" | "order" | "actualHours"
+      "id" | "createdAt" | "order" | "actual"
     >
   ) {
     const order = tasks.filter(
@@ -89,7 +91,7 @@ export function useTime100() {
         id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
         order,
-        actualHours: 0,
+        actual: 0,
       },
     ]);
   }
@@ -186,20 +188,20 @@ export function useTime100() {
       );
 
       const totalHours = projectTasks.reduce(
-        (sum, task) => sum + task.estimatedHours,
+        (sum, task) => sum + task.estimated,
         0
       );
 
       const completedHours = projectTasks
-        .filter((task) => task.status === "done")
+        .filter((task) => task.status === "DONE")
         .reduce(
           (sum, task) =>
-            sum + task.estimatedHours,
+            sum + task.estimated,
           0
         );
 
-      const actualHours = projectTasks.reduce(
-        (sum, task) => sum + task.actualHours,
+      const actual = projectTasks.reduce(
+        (sum, task) => sum + task.actual,
         0
       );
 
@@ -213,7 +215,7 @@ export function useTime100() {
         project,
         totalHours,
         completedHours,
-        actualHours,
+        actual,
         progress,
         taskCount: projectTasks.length,
       };

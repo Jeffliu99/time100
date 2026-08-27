@@ -12,11 +12,11 @@ export default function Time100Dashboard() {
   const app = useTime100();
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const t = getMessages(app.preferences.language);
-  const statuses: TaskStatus[] = ["todo", "doing", "done"];
-  const openTasks = app.tasks.filter((task) => task.status !== "done").length;
-  const completed = app.tasks.filter((task) => task.status === "done").length;
-  const totalEstimated = app.tasks.reduce((sum, task) => sum + task.estimatedHours, 0);
-  const totalActual = app.tasks.reduce((sum, task) => sum + task.actualHours, 0);
+  const statuses: TaskStatus[] = ["TODO", "DOING", "DONE"];
+  const openTasks = app.tasks.filter((task) => task.status !== "DONE").length;
+  const completed = app.tasks.filter((task) => task.status === "DONE").length;
+  const totalEstimated = app.tasks.reduce((sum, task) => sum + task.estimated, 0);
+  const totalActual = app.tasks.reduce((sum, task) => sum + task.actual, 0);
 
   if (!app.ready) return <main className="min-h-screen bg-slate-50 p-10">Loading Time100…</main>;
 
@@ -44,7 +44,7 @@ export default function Time100Dashboard() {
 
           <section className="mt-7 grid gap-5 lg:grid-cols-3">
             {statuses.map((status) => (
-              <TaskColumn key={status} status={status} tasks={app.sortedByStatus(status)} projects={app.projects} language={app.preferences.language} draggedId={draggedId} setDraggedId={setDraggedId} onMove={app.moveTask} onDelete={app.deleteTask} onHoursChange={(id, hours) => app.updateTask(id, { actualHours: hours })} onReorder={(drag, target) => { app.reorderTask(drag, target); setDraggedId(null); }} />
+              <TaskColumn key={status} status={status} tasks={app.sortedByStatus(status)} projects={app.projects} language={app.preferences.language} draggedId={draggedId} setDraggedId={setDraggedId} onMove={app.moveTask} onDelete={app.deleteTask} onHoursChange={(id, hours) => app.updateTask(id, { actual: hours })} onReorder={(drag, target) => { app.reorderTask(drag, target); setDraggedId(null); }} />
             ))}
           </section>
 

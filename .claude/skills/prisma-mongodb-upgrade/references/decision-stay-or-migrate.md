@@ -24,7 +24,7 @@ status confirmed by the Prisma team 2026-07):
   aggregation-pipeline builder, raw lane, driver over the official `mongodb` package),
   first-class contract-driven migrations, and extensive tests against real in-memory MongoDB.
 - **The Mongo client façade does not wrap `db.transaction(...)` yet** — multi-document
-  atomicity is done through the MongoDB driver's session API, which is directly available
+  atomicity is DONE through the MongoDB driver's session API, which is directly available
   (the `mongodb` package is a user-supplied peer dependency). A façade wrapper is expected;
   this skill will be updated when it merges.
 - Early Access means pre-1.0 minors can carry breaking changes, with published upgrade

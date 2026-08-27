@@ -22,7 +22,7 @@ interface Props {
     phaseId: string;
     status: TaskStatus;
     priority: Priority;
-    estimatedHours: number;
+    estimated: number;
     dueDate?: string;
   }) => void;
 }
@@ -42,7 +42,7 @@ export default function AddTaskForm({
   );
   const [priority, setPriority] =
     useState<Priority>("medium");
-  const [estimatedHours, setEstimatedHours] =
+  const [estimated, setestimated] =
     useState(1);
   const [dueDate, setDueDate] = useState("");
 
@@ -69,15 +69,15 @@ export default function AddTaskForm({
       title: cleanTitle,
       projectId,
       phaseId: "",
-      status: "todo",
+      status: "TODO",
       priority,
-      estimatedHours,
+      estimated,
       dueDate: dueDate || undefined,
     });
 
     setTitle("");
     setPriority("medium");
-    setEstimatedHours(1);
+    setestimated(1);
     setDueDate("");
     setOpen(false);
   }
@@ -145,9 +145,9 @@ export default function AddTaskForm({
         type="number"
         min="0.5"
         step="0.5"
-        value={estimatedHours}
+        value={estimated}
         onChange={(event) =>
-          setEstimatedHours(Number(event.target.value))
+          setestimated(Number(event.target.value))
         }
         className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
       />

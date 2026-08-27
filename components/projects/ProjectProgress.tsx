@@ -9,7 +9,7 @@ interface ProgressItem {
 
   progress: number;
   totalHours: number;
-  actualHours: number;
+  actual: number;
   taskCount: number;
 }
 
@@ -46,7 +46,7 @@ export default function ProjectProgress({
             </div>
 
             <p className="mt-2 text-xs text-slate-500">
-              {item.actualHours}h / {item.totalHours}h
+              {item.actual}h / {item.totalHours}h
             </p>
           </div>
         ))}

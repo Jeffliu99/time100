@@ -12,8 +12,8 @@ const messages = {
     phase: "阶段",
     priority: "优先级",
     dueDate: "截止日期",
-    estimatedHours: "预计工时",
-    actualHours: "实际工时",
+    estimated: "预计工时",
+    actual: "实际工时",
     save: "保存",
     cancel: "取消",
     delete: "删除",
@@ -43,8 +43,8 @@ const messages = {
     phase: "Phase",
     priority: "Priority",
     dueDate: "Due date",
-    estimatedHours: "Estimated hours",
-    actualHours: "Actual hours",
+    estimated: "Estimated hours",
+    actual: "Actual hours",
     save: "Save",
     cancel: "Cancel",
     delete: "Delete",
@@ -70,8 +70,8 @@ export function getMessages(language: Language) {
 }
 
 export const statusLabels: Record<Language, Record<TaskStatus, string>> = {
-  zh: { todo: "待办", doing: "进行中", done: "已完成" },
-  en: { todo: "To Do", doing: "In Progress", done: "Completed" },
+  zh: { TODO: "待办", DOING: "进行中", DONE: "已完成" },
+  en: { TODO: "To Do", DOING: "In Progress", DONE: "Completed" },
 };
 
 export const priorityLabels: Record<Language, Record<Priority, string>> = {
