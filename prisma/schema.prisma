@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model BlogGenerationQueue {
+  id          Int       @id @default(autoincrement())
+  keyword     String
+  language    String    @default("zh")
+  title       String?
+  slug        String?
+  status      String    @default("pending")
+  payload     Json?
+  generatedAt DateTime?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model RedditLead {
+  id             Int              @id @default(autoincrement())
+  title          String
+  url            String           @unique
+  subreddit      String
+  author         String?
+  postCreatedAt  DateTime?
+  upvotes        Int              @default(0)
+  commentCount   Int              @default(0)
+  intentScore    Int              @default(0)
+  matchScore     Int              @default(0)
+  problemSummary String?
+  aiAnalysis     String?
+  replyDraft     String?
+  finalReply     String?
+  repliedAt      DateTime?
+  keyword        String?
+  blogPostId     Int?
+  status         RedditLeadStatus @default(NEW)
+  city           String?
+  category       String?
+  notes          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime
+  blog_posts     blog_posts?      @relation(fields: [blogPostId], references: [id])
+
+  @@index([category])
+  @@index([city])
+  @@index([createdAt])
+  @@index([intentScore])
+  @@index([status])
+}
+
+model blog_categories {
+  id         Int          @id @default(autoincrement())
+  name       String       @db.VarChar(100)
+  slug       String       @unique @db.VarChar(100)
+  created_at DateTime     @default(now())
+  updated_at DateTime
+  blog_posts blog_posts[]
+}
+
+model blog_posts {
+  id              Int              @id @default(autoincrement())
+  category_id     Int?
+  title           String           @db.VarChar(255)
+  slug            String           @unique @db.VarChar(255)
+  excerpt         String?
+  content         String
+  cover_image     String?          @db.VarChar(500)
+  status          String           @default("draft") @db.VarChar(20)
+  is_featured     Boolean          @default(false)
+  published_at    DateTime?
+  created_at      DateTime         @default(now())
+  updated_at      DateTime
+  seo_description String?
+  seo_keywords    String?
+  seo_title       String?          @db.VarChar(255)
+  site            String           @default("both") @db.VarChar(50)
+  view_count      Int              @default(0)
+  RedditLead      RedditLead[]
+  blog_categories blog_categories? @relation(fields: [category_id], references: [id])
+}
+
+enum RedditLeadStatus {
+  NEW
+  AI_ANALYZED
+  REPLY_READY
+  REPLIED
+  BLOG_CREATED
+  CONVERTED
+  CLOSED
+  IGNORED
+}
+
+enum ProjectStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+
+  status      ProjectStatus @default(TODO)
+
+  progress    Int @default(0)
+  priority    Int @default(3)
+
+  estimated   Float?
+  actual      Float?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tasks       Task[]
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+
+  status      ProjectStatus @default(TODO)
+
+  priority    Int @default(3)
+
+  estimated   Float?
+  actual      Float?
+
+  projectId   String
+
+  project     Project @relation(fields: [projectId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
