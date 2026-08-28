@@ -71,7 +71,7 @@ export function useTime100() {
         ]);
 
         setProjects(projectData);
-        setTasks(taskData);
+        setTasks(taskData.data);
       } catch (error) {
         console.error(error);
       } finally {
