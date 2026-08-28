@@ -75,6 +75,6 @@ export const statusLabels: Record<Language, Record<TaskStatus, string>> = {
 };
 
 export const priorityLabels: Record<Language, Record<Priority, string>> = {
-  zh: { high: "高", medium: "中", low: "低" },
-  en: { high: "High", medium: "Medium", low: "Low" },
+  zh: { HIGH: "高", MEDIUM: "中", LOW: "低" },
+  en: { HIGH: "High", MEDIUM: "Medium", LOW: "Low" },
 };

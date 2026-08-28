@@ -1,4 +1,6 @@
 "use client";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { useEffect, useState } from "react";
 import type {
@@ -41,10 +43,10 @@ export default function AddTaskForm({
     defaultProjectId || ""
   );
   const [priority, setPriority] =
-    useState<Priority>("medium");
+    useState<Priority>("MEDIUM");
   const [estimated, setestimated] =
     useState(1);
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] =  useState<Date | null>(null);
 
   // 数据库项目异步加载完成后，自动选择第一个项目
   useEffect(() => {
@@ -72,13 +74,13 @@ export default function AddTaskForm({
       status: "TODO",
       priority,
       estimated,
-      dueDate: dueDate || undefined,
+     dueDate: dueDate ? dueDate.toISOString() : undefined,
     });
 
     setTitle("");
-    setPriority("medium");
+    setPriority("MEDIUM");
     setestimated(1);
-    setDueDate("");
+    setDueDate(null);
     setOpen(false);
   }
 
@@ -133,7 +135,7 @@ export default function AddTaskForm({
         className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
       >
         {(
-          ["high", "medium", "low"] as Priority[]
+          ["HIGH","MEDIUM", "LOW"] as Priority[]
         ).map((item) => (
           <option key={item} value={item}>
             {priorityLabels[language][item]}
@@ -152,12 +154,21 @@ export default function AddTaskForm({
         className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
       />
 
-      <input
-        type="date"
-        value={dueDate}
-        onChange={(event) => setDueDate(event.target.value)}
-        className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
-      />
+<DatePicker
+  selected={dueDate}
+  onChange={(date: Date | null) => setDueDate(date)}
+  dateFormat={
+    language === "en"
+      ? "yyyy-MM-dd"
+      : "yyyy年MM月dd日"
+  }
+  placeholderText={
+    language === "en"
+      ? "Select Date"
+      : "选择日期"
+  }
+  className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
+/>
 
       <div className="flex gap-2 md:col-span-6 md:justify-end">
         <button
