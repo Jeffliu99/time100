@@ -1,22 +1,50 @@
-# Feature Spec: Task Timeline
+# Task Timeline
 
 Status: Planned for V2
 
 ## Goal
 
-展示单个任务的生命周期。
+Display the lifecycle of an individual task.
 
-## Planned Events
+## Supported Events
 
-- TASK_CREATED
-- TASK_STARTED
-- TASK_UPDATED
-- TASK_PAUSED
-- TASK_RESUMED
-- TASK_COMPLETED
+```text
+TASK_CREATED
+TASK_STARTED
+TASK_UPDATED
+TASK_PAUSED
+TASK_RESUMED
+TASK_COMPLETED
+```
+
+## Data Integrity
+
+- Every event must have a valid timestamp.
+- Every event must have a traceable source.
+- Events must be displayed in chronological order.
+- Duplicate completion events must be prevented.
+
+## Timeline Flow
+
+```text
+Task Created
+    ↓
+Task Started
+    ↓
+Task Updated
+    ↓
+Task Paused
+    ↓
+Task Resumed
+    ↓
+Task Completed
+```
+
+Not every task is required to contain every event type.
 
 ## Acceptance Criteria
 
-- 只显示当前任务的数据。
-- 每个事件有真实时间与来源。
-- 完成事件不可因重复请求而重复创建。
+- Only data belonging to the current task is displayed.
+- Every event includes a valid timestamp and source.
+- Duplicate completion events cannot be created through repeated requests.
+- Timeline ordering remains consistent across refreshes.

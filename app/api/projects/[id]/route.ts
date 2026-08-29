@@ -6,12 +6,10 @@ const allowedFields = [
   "title",
   "description",
   "status",
+  "progress",
   "priority",
-  "order",
   "estimated",
   "actual",
-  "dueDate",
-  "projectId",
 ] as const;
 
 export async function PATCH(
@@ -29,16 +27,17 @@ export async function PATCH(
     }
 
     const { id } = await context.params;
+
     const body = await request.json();
 
-    // 先读取修改前的任务
-    const oldTask = await prisma.task.findUnique({
-      where: { id },
-    });
+    const oldProject =
+      await prisma.project.findUnique({
+        where: { id },
+      });
 
-    if (!oldTask) {
+    if (!oldProject) {
       return NextResponse.json(
-        { error: "Task not found" },
+        { error: "Project not found" },
         { status: 404 }
       );
     }
@@ -55,6 +54,14 @@ export async function PATCH(
       data.title = data.title.trim();
     }
 
+    if (data.progress !== undefined) {
+      data.progress = Number(data.progress);
+    }
+
+    if (data.priority !== undefined) {
+      data.priority = Number(data.priority);
+    }
+
     if (data.estimated !== undefined) {
       data.estimated = Number(data.estimated);
     }
@@ -63,33 +70,36 @@ export async function PATCH(
       data.actual = Number(data.actual);
     }
 
-    if (data.order !== undefined) {
-      data.order = Number(data.order);
-    }
+    const project =
+      await prisma.project.update({
+        where: { id },
+        data,
+      });
 
-    if (data.dueDate !== undefined) {
-      data.dueDate = data.dueDate
-        ? new Date(String(data.dueDate))
-        : null;
-    }
-
-    // 更新任务
-    const task = await prisma.task.update({
-      where: { id },
-      data,
-    });
-
-    // 判断任务是不是“刚刚完成”
     const justCompleted =
-    oldTask.status !== "DONE" &&
-    task.status === "DONE";
-    
+      oldProject.status !== "DONE" &&
+      project.status === "DONE";
+
+      console.log(
+        "PROJECT EVENT CHECK",
+        oldProject.status,
+        "->",
+        project.status,
+        "justCompleted:",
+        justCompleted
+      );
+
     if (justCompleted) {
+
+      console.log(
+        "CREATING PROJECT_COMPLETED",
+        project.title
+      );
       const existing =
         await prisma.growthEvent.findFirst({
           where: {
-            taskId: task.id,
-            type: "TASK_COMPLETED",
+            projectId: project.id,
+            type: "PROJECT_COMPLETED",
           },
         });
 
@@ -97,28 +107,31 @@ export async function PATCH(
         await prisma.growthEvent.create({
           data: {
             userId: session.user.id,
-            taskId: task.id,
-            type: "TASK_COMPLETED",
-            title: task.title,
-            description: `完成任务：${task.title}`,
-            importance: 1,
+            projectId: project.id,
+
+            type: "PROJECT_COMPLETED",
+
+            title: project.title,
+
+            description: `项目完成：${project.title}`,
+
+            importance: 10,
           },
         });
       }
     }
 
-
-    return NextResponse.json(task);
+    return NextResponse.json(project);
   } catch (error) {
     console.error(
-      "PATCH /api/tasks/[id] failed",
+      "PATCH /api/projects/[id] failed",
       error
     );
 
     return NextResponse.json(
-  { error: "Failed to update task" },
-  { status: 500 }
-);
+      { error: "Failed to update project" },
+      { status: 500 }
+    );
   }
 }
 
@@ -129,19 +142,20 @@ export async function DELETE(
   try {
     const { id } = await context.params;
 
-    const task = await prisma.task.delete({
-      where: { id },
-    });
+    const project =
+      await prisma.project.delete({
+        where: { id },
+      });
 
-    return NextResponse.json(task);
+    return NextResponse.json(project);
   } catch (error) {
     console.error(
-      "DELETE /api/tasks/[id] failed",
+      "DELETE /api/projects/[id] failed",
       error
     );
 
     return NextResponse.json(
-      { error: "Failed to delete task" },
+      { error: "Failed to delete project" },
       { status: 500 }
     );
   }

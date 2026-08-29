@@ -1,124 +1,126 @@
-# Time100 Design Spec v1.1
+# Time100 Design Specification v1.1
 
 Last Updated: 2026-08-29
 
 ## 1. Vision
 
-Time100 不是普通任务管理工具。Time100 是帮助用户规划未来、记录行动、沉淀成长和回顾人生轨迹的成长操作系统。
+Time100 is not an ordinary task management tool. Time100 is a Growth Operating System that helps users plan their future, record actions, preserve growth, and review the path of their lives.
 
-用户不是单纯完成任务，而是在建设自己的成长世界。
+Users are not simply completing tasks. Users are building their own growth world.
 
 ## 2. Product Philosophy
 
-- 成长感 > 炫酷感
-- 陪伴感 > 功能堆叠
-- 流畅感 > 动画数量
-- 长期价值 > 短期刺激
-- 用户控制 > 系统替用户决定
-- 高级感 = 克制 + 一致 + 节奏
+- Sense of growth over visual spectacle
+- Sense of companionship over feature accumulation
+- Fluidity over animation quantity
+- Long-term value over short-term stimulation
+- User control over system decisions
+- Premium quality = restraint + consistency + rhythm
 
 ## 3. Mobile First
 
-- 第一屏优先展示当前重点，而不是全部任务。
-- 核心操作应可单手完成。
-- 次要信息默认折叠或进入详情。
-- 桌面端可以增加信息密度，但不改变核心流程。
+- The first screen prioritizes the user's current focus rather than displaying every task.
+- Core actions must support one-handed use.
+- Secondary information is collapsed by default or placed in detail views.
+- Desktop layouts may increase information density without changing the core workflow.
 
 ## 4. Core Systems
 
-1. Project
-2. Task
-3. GrowthEvent
-4. Timeline / Growth Tree
-5. Companion
-6. Companion House
-7. Companion Memory
-8. XP and Level
-9. Feedback System
-10. AI Planning
+- Project
+- Task
+- GrowthEvent
+- Timeline / Growth Tree
+- Companion
+- Companion House
+- Companion Memory
+- XP and Level
+- Feedback System
+- AI Planning
 
 ## 5. GrowthEvent
 
-GrowthEvent 是 Time100 的成长事实层。
+GrowthEvent is the factual growth layer of Time100.
 
-当前事件类型：
+Current event types:
 
 - `TASK_COMPLETED`
 - `PROJECT_COMPLETED`
 - `MILESTONE`
 
-记录规则：
+Recording rules:
 
-- 只记录真实发生的事件。
-- 不推断用户情绪。
-- 使用 `taskId`、`projectId` 防止重复。
-- 成长记录属于用户，可查看、导出和删除。
+- Record only events that actually occurred.
+- Do not infer the user's emotions.
+- Use `taskId` and `projectId` to prevent duplicates.
+- Growth records belong to the user and can be viewed, exported, and deleted.
 
 ## 6. Timeline and Growth Tree
 
 ```text
-个人成长
-  └── 项目
-        └── 任务
-              └── 成长事件
+Personal Growth
+  -> Project
+    -> Task
+      -> Growth Event
 ```
 
 ### Global Timeline
 
-显示用户全部项目、重要任务、项目完成和里程碑。项目默认收起，可逐层展开项目、任务和事件。
+Displays all projects, important tasks, project completions, and milestones belonging to the user. Projects are collapsed by default and can be expanded progressively to reveal projects, tasks, and events.
 
 ### Project Timeline
 
-显示单个项目从创建、任务推进到项目完成的过程。
+Displays the journey of a single project from creation through task progress to project completion.
 
 ### Task Timeline
 
-显示单个任务的创建、开始、修改、暂停、恢复和完成。
+Displays the creation, start, modification, pause, resumption, and completion of a single task.
 
 ### Tree Interaction
 
-- 项目默认收起。
-- 任务默认收起。
-- 同时只操作当前节点。
-- 子节点展开时才渲染。
-- 当前项目或最近成长可以自动展开。
+- Projects are collapsed by default.
+- Tasks are collapsed by default.
+- Only the current node is affected by an interaction.
+- Child nodes are rendered only when expanded.
+- The current project or most recent growth may be expanded automatically.
 
 ### Tree Animation
 
-- 展开：180 至 220ms
-- 收起：可略快
-- 箭头：`transform: rotate()`
-- 节点：`transform` + `opacity`
-- 子节点：可错开 20 至 40ms 出现
-- 支持 `prefers-reduced-motion`
+- Expand: `180-220ms`
+- Collapse: may be slightly faster
+- Arrow: `transform: rotate()`
+- Node: `transform` + `opacity`
+- Child nodes may appear with a `20-40ms` stagger
+- Support `prefers-reduced-motion`
 
 ## 7. Companion System
 
-产品名称统一为“成长伙伴”。成长伙伴不是普通 AI 助手，也不暗示拥有真实情感。
+The official product term is **Growth Companion**.
 
-候选伙伴：
+A Growth Companion is not an ordinary AI assistant and must not imply that it has real emotions.
 
-- Nova：成长型
-- Luna：安静陪伴型
-- Aria：积极激励型
-- Hana：温暖型
-- Leo：行动型
-- Kai：沉稳型
-- Atlas：挑战型
-- Noah：平衡型
+Candidate companions:
 
-每个伙伴必须拥有独立语言节奏、常用词汇、鼓励方式、回忆方式、动画权重和视觉主题。
+- Nova: growth-oriented
+- Luna: quiet companionship
+- Aria: positive encouragement
+- Hana: warm
+- Leo: action-oriented
+- Kai: steady
+- Atlas: challenge-oriented
+- Noah: balanced
+
+Every companion must have a distinct speaking rhythm, vocabulary, encouragement style, memory style, animation weight, and visual theme.
 
 ### Setup Wizard
 
 ```text
-欢迎
-→ 选择伙伴类型
-→ 选择名字与人格
-→ 预览形象
-→ 用户确认
-→ 保存至 User
-→ 进入 Dashboard
+Welcome
+-> Select companion type
+-> Select name and personality
+-> Preview appearance
+-> User confirmation
+-> Save to User
+-> Enter Dashboard
 ```
 
 ### Message Types
@@ -130,113 +132,129 @@ GrowthEvent 是 Time100 的成长事实层。
 - `LEVEL_UP`
 - `GOODBYE`
 
-对话必须基于真实成长数据，不猜测用户情绪，不制造焦虑或情感依赖。
+Dialogue must be based on factual growth data. It must not guess the user's emotions, create anxiety, or encourage emotional dependency.
 
 ## 8. Companion House
 
-- 固定悬浮在视口右下角。
-- 使用 `position: fixed`。
-- 页面滚动不改变位置。
-- 手机端缩小并避开底部安全区域。
-- 点击后伙伴出现，显示简短对话，约 5 秒后自动回屋。
+- Fixed at the bottom-right of the viewport.
+- Uses `position: fixed`.
+- Page scrolling does not change its position.
+- On mobile, reduce its size and avoid the bottom safe area.
+- When the house is clicked, the companion appears and displays a short message, then returns home after approximately five seconds.
 
-小屋等级：
+House levels:
 
-- Lv1：小木屋
-- Lv2：温馨小屋
-- Lv3：成长小院
-- Lv4：成长庄园
-- Lv5：成长城堡
+- Lv1: Small Cabin
+- Lv2: Cozy House
+- Lv3: Growth Cottage
+- Lv4: Growth Manor
+- Lv5: Growth Castle
 
 ## 9. Companion Memory
 
-记忆来源：GrowthEvent、项目完成、重要任务、里程碑、用户主动填写的反思、伙伴与小屋升级。
+Memory sources:
+
+- GrowthEvent
+- Project completion
+- Important tasks
+- Milestones
+- Reflections entered by the user
+- Companion and house upgrades
 
 ```text
-真实成长事实
-+ 用户自己的反思
-+ 伙伴人格
-= 有温度的成长记忆
+Factual growth
++ the user's own reflection
++ companion personality
+= a warm growth memory
 ```
 
-用户可以编辑、删除或禁止伙伴引用某条记忆。
+Users can edit or delete a memory, or prevent the companion from referencing a specific memory.
 
 ## 10. XP and Levels
 
-建议经验值：
+Suggested experience values:
 
-- 完成任务：+2 XP
-- 完成项目：+20 XP
-- 重要里程碑：+30 XP
+- Complete a task: `+2 XP`
+- Complete a project: `+20 XP`
+- Important milestone: `+30 XP`
 
-伙伴等级：
+Companion levels:
 
-- Lv1：成长种子
-- Lv2：成长萌芽
-- Lv3：成长旅者
-- Lv4：成长探索者
-- Lv5：成长守护者
+- Lv1: Growth Seed
+- Lv2: Growth Sprout
+- Lv3: Growth Traveler
+- Lv4: Growth Explorer
+- Lv5: Growth Guardian
 
-经验值必须由服务端计算与保存，避免重复奖励。
+Experience must be calculated and stored by the server to prevent duplicate rewards.
 
 ## 11. Animation Language
 
-统一原则：轻、快、稳、克制。
+Unified principles: light, fast, stable, and restrained.
 
-- Growth Tree：180 至 220ms
-- Companion 出场：250 至 350ms
-- 对话气泡：180 至 250ms
-- 任务粒子：600 至 800ms
-- 项目完成仪式：约 1.5 至 2 秒
-- 小屋升级：约 2 至 2.5 秒
+- Growth Tree: `180-220ms`
+- Companion entrance: `250-350ms`
+- Dialogue bubble: `180-250ms`
+- Task particles: `600-800ms`
+- Project completion ceremony: approximately `1.5-2s`
+- House upgrade: approximately `2-2.5s`
 
-优先动画 `transform` 与 `opacity`；临时效果结束后应卸载；低性能设备提供 2D 降级；隐藏伙伴不持续占用 GPU。
+Prioritize animation of `transform` and `opacity`. Temporary effects must be unmounted after completion. Provide a 2D fallback for low-performance devices. Hidden companions must not continuously consume GPU resources.
 
 ## 12. 3D Companion
 
-3D 是增强体验，不阻塞核心功能。
+3D enhances the experience but must not block core functionality.
 
-V1 使用 2D 或伪 3D 小屋、透明伙伴形象、CSS 过渡和气泡。V2 再加入 GLB/glTF 模型和 Idle、Walk、Wave、Talk、Celebrate、WalkHome 动作。
+V1 uses a 2D or pseudo-3D house, transparent companion artwork, CSS transitions, and dialogue bubbles. V2 may add GLB/glTF models and the following actions:
+
+- Idle
+- Walk
+- Wave
+- Talk
+- Celebrate
+- WalkHome
 
 ## 13. Privacy and Safety
 
-- 所有成长内容默认私密。
-- 成长属于用户。
-- AI 只读取获得授权的内容。
-- 分享前默认隐藏敏感信息。
-- 伙伴不能被设计成替代现实关系的角色。
+- All growth content is private by default.
+- Growth belongs to the user.
+- AI reads only content for which access has been authorized.
+- Sensitive information is hidden by default before sharing.
+- A companion must not be designed to replace real-world relationships.
 
-品牌承诺：
+Brand promise:
 
-> Time100 记录成长，但成长属于用户。
+> Time100 records growth, but growth belongs to the user.
 
 ## 14. Specification First Development
 
-Time100 采用 SFD 开发模式。
+Time100 uses the Specification First Development model.
 
 ```text
 Idea
-→ Design Spec
-→ Feature Spec
-→ Implementation
-→ Build
-→ Mobile Review
-→ Design Review
-→ Commit
-→ Push
+-> Design Spec
+-> Feature Spec
+-> Implementation
+-> Build
+-> Mobile Review
+-> Design Review
+-> Commit
+-> Push
 ```
 
-所有重大功能必须先有 Spec，后有 Code。Spec 是唯一事实来源。当代码与 Spec 不一致时，应优先修改代码以符合 Spec，或通过评审正式更新 Spec。
+Every major feature must have a specification before code is written. Specifications are the single source of truth.
+
+When code and specifications differ, update the code to follow the specification or formally update the specification through review.
 
 ### Development Checklist
 
-- [ ] 是否符合 Time100 Vision？
-- [ ] 是否强化成长、陪伴或回顾价值？
-- [ ] 手机第一屏是否清晰？
-- [ ] 动画是否符合统一规范？
-- [ ] 是否需要 GrowthEvent？
-- [ ] 是否需要防重复来源 ID？
-- [ ] 是否影响 Timeline、Memory、XP 或 Companion？
-- [ ] `npm run build` 是否通过？
-- [ ] Console、Dark Mode、Mobile、未登录状态是否正常？
-- [ ] 数据权限是否正确？
+- Does the feature align with the Time100 vision?
+- Does it strengthen growth, companionship, or reflection value?
+- Is the first mobile screen clear?
+- Does the animation follow the unified specification?
+- Does the feature require a GrowthEvent?
+- Does it require a source ID to prevent duplicates?
+- Does it affect Timeline, Memory, XP, or Companion?
+- Does `npm run build` pass?
+- Do the console, dark mode, mobile layout, and signed-out state work correctly?
+- Are data permissions correct?

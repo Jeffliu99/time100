@@ -2,16 +2,23 @@
   "name": "time100",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "prisma generate && next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
+"scripts": {
+  "predev": "npm run docs:sync",
+  "dev": "next dev",
+  "docs:sync": "node scripts/sync-docs.mjs",
+  "prebuild": "npm run docs:sync",
+  "build": "prisma generate && next build",
+  "start": "next start",
+  "lint": "eslint"
+},
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.3",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "next": "16.3.3",
+    "next-auth": "^5.0.0-beta.32",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
     "pg": "^8.23.0",
     "prisma": "^7.10.0",
     "react": "19.2.8",
@@ -30,4 +37,6 @@
     "tsx": "^4.23.12",
     "typescript": "^5"
   }
+  
 }
+

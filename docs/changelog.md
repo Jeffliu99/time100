@@ -2,11 +2,35 @@
 
 ## v1.1 - 2026-08-29
 
-- 增加 Specification First Development 正式流程。
-- 增加 Design Spec 与 Feature Spec 分层。
-- 增加可折叠 Growth Tree 交互原则。
-- 明确 Companion House、伙伴记忆、动画与性能规范。
+- Added the formal Specification First Development workflow.
+- Added separate Design Spec and Feature Spec layers.
+- Added the interaction principles for the collapsible Growth Tree.
+- Clarified the specifications for Companion House, Companion Memory, animation, and performance.
 
 ## v1.0
 
-- 建立 Time100 产品愿景、成长树、成长伙伴、小屋、动画、隐私和开发流程规范。
+- Established the Time100 product vision and specifications for the Growth Tree, Companion, Companion House, animation, privacy, and development workflow.
+
+## Dependency Notes
+
+### 2026-08-29
+
+`npm audit` detected the following dependency chain:
+
+```text
+Prisma 7.10.0
+-> @prisma/config 7.10.0
+-> deepmerge-ts 7.1.5
+```
+
+A known high-risk vulnerability exists:
+
+```text
+CVE-2026-40345
+```
+
+Do not use `npm audit fix --force` at this time.
+
+Reason:
+
+The change would require downgrading or changing the Prisma version and could affect the existing system. Wait for an official Prisma fix, then perform a coordinated upgrade.

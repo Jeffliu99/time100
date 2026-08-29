@@ -1,24 +1,51 @@
-# Feature Spec: Growth Tree
+# Growth Tree
 
 Status: Planning
 
 ## Goal
 
-在一个页面中展示个人成长、项目、任务和事件的层级关系，并支持逐层展开。
+Display the hierarchical relationship between Life, Projects, Tasks, and Growth Events in a single interface, allowing users to progressively explore their growth world.
+
+## Hierarchy
+
+```text
+Life
+  -> Project
+    -> Task
+      -> Growth Event
+```
 
 ## Requirements
 
-- 项目默认收起。
-- 任务默认收起。
-- 子节点展开时才渲染。
-- 每个节点独立控制状态。
-- 展开 180 至 220ms。
-- 使用 transform 与 opacity。
-- 支持 reduced motion。
+- Projects are collapsed by default.
+- Tasks are collapsed by default.
+- Child nodes are rendered only when expanded.
+- Each node manages its own expansion state.
+- Expansion animation duration: 180–220ms.
+- Use only:
+  - transform
+  - opacity
+- Support reduced motion preferences.
+- Interactions should remain light, fast, stable, and restrained.
+
+## Performance Requirements
+
+- Large trees should remain responsive.
+- Expanding one node should not trigger noticeable re-rendering of the entire tree.
+- Child nodes should be lazily rendered.
+
+## User Experience
+
+Users can:
+
+1. Browse projects.
+2. Expand a project to reveal tasks.
+3. Expand a task to reveal growth events.
+4. Open event details when available.
 
 ## Acceptance Criteria
 
-- 10 个以上项目时页面仍清晰。
-- 展开一个节点不会导致整棵树明显重渲染。
-- 可以从项目进入任务，再查看事件详情。
-- 手机端可单手操作。
+- The tree remains clear with more than 10 projects.
+- Expanding one node does not cause significant re-rendering of unrelated nodes.
+- Users can navigate from a project to a task and then to growth event details.
+- The mobile experience supports comfortable one-handed use.

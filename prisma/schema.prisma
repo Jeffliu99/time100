@@ -102,27 +102,27 @@ enum ProjectStatus {
 }
 
 model Project {
-  id          String @id @default(cuid())
+  id String @id @default(cuid())
 
-  title       String
+  title String
 
   description String?
 
-  status      ProjectStatus @default(TODO)
+  status ProjectStatus @default(TODO)
 
-  progress    Int @default(0)
+  progress Int @default(0)
 
-  priority    Int @default(3)
+  priority Int @default(3)
 
-  estimated   Float?
+  estimated Float?
 
-  actual      Float?
+  actual Float?
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  updatedAt   DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
-  tasks       Task[]
+  tasks Task[]
 }
 
 enum TaskStatus {
@@ -138,29 +138,120 @@ enum TaskPriority {
 }
 
 model Task {
-  id          String @id @default(cuid())
+  id String @id @default(cuid())
 
-  title       String
+  title String
 
   description String?
 
-  status      TaskStatus @default(TODO)
+  status TaskStatus @default(TODO)
 
-  priority    TaskPriority @default(MEDIUM)
+  priority TaskPriority @default(MEDIUM)
 
-  order       Int @default(0)
+  order Int @default(0)
 
-  estimated   Float @default(0)
+  estimated Float @default(0)
 
-  actual      Float @default(0)
+  actual Float @default(0)
 
-  dueDate     DateTime?
+  dueDate DateTime?
 
-  projectId   String
+  projectId String
 
-  project     Project @relation(fields: [projectId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  updatedAt   DateTime @updatedAt
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+
+  displayName String?
+
+  // Companion
+  companionName String?
+
+  companionGender String?
+
+  companionType String?
+
+  companionAvatar String?
+
+  companionLevel Int @default(1)
+
+  companionXp Int @default(0)
+
+  companionCreatedAt DateTime?
+
+  accounts Account[]
+  sessions Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+
+  token String
+
+  expires DateTime
+
+  @@unique([identifier, token])
+}
+
+model GrowthEvent {
+  id String @id @default(cuid())
+
+  userId String
+
+  taskId String?
+
+  projectId String?
+
+  type String
+
+  title String
+
+  description String?
+
+  importance Int @default(1)
+
+  createdAt DateTime @default(now())
 }
