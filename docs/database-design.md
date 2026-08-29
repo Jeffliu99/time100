@@ -8,6 +8,7 @@ Stores login identity, display name, and the current companion configuration.
 
 Companion fields include:
 
+- `companionSetupCompleted`
 - `companionName`
 - `companionGender`
 - `companionType`
@@ -15,6 +16,22 @@ Companion fields include:
 - `companionLevel`
 - `companionXp`
 - `companionCreatedAt`
+
+### Companion Setup
+
+The Companion Setup Wizard is displayed when:
+
+```text
+companionSetupCompleted = false
+```
+
+After the user confirms a companion configuration:
+
+```text
+companionSetupCompleted = true
+```
+
+The setup process runs only once by default. Future versions may allow users to change companions through Companion Settings.
 
 ### Project
 

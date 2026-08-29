@@ -175,18 +175,13 @@ model User {
   displayName String?
 
   // Companion
+  companionSetupCompleted Boolean @default(false)
   companionName String?
-
   companionGender String?
-
   companionType String?
-
   companionAvatar String?
-
   companionLevel Int @default(1)
-
   companionXp Int @default(0)
-
   companionCreatedAt DateTime?
 
   accounts Account[]
