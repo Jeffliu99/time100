@@ -118,6 +118,16 @@ export async function PATCH(
             importance: 10,
           },
         });
+
+        await prisma.companionMemory.create({
+            data: {
+              userId: session.user.id,
+              title: project.title,
+              content: `Completed project: ${project.title}`,
+              type: "PROJECT_COMPLETED",
+              importance: 5,
+            },
+          });
       }
     }
 
