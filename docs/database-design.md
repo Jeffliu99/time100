@@ -8,14 +8,17 @@ Stores login identity, display name, and the current companion configuration.
 
 Companion fields include:
 
-- `companionSetupCompleted`
-- `companionName`
-- `companionGender`
-- `companionType`
-- `companionAvatar`
-- `companionLevel`
-- `companionXp`
-- `companionCreatedAt`
+Companion fields include:
+
+- companionSetupCompleted
+- companionName
+- companionGender
+- companionType
+- companionAvatar
+- companionLevel
+- companionXp
+- houseLevel
+- companionCreatedAt
 
 ### Companion Setup
 
@@ -62,3 +65,16 @@ Key fields:
 - Use `taskId` or `projectId` together with the event type to prevent duplicates.
 - Every query for user data must be scoped to the current user.
 - Define the retention policy for growth records before deleting a project or task.
+
+### CompanionMemory
+
+Stores memorable growth milestones that the companion can recall later.
+
+Key fields:
+
+- userId
+- title
+- content
+- type
+- importance
+- createdAt

@@ -183,7 +183,8 @@ model User {
   companionLevel Int @default(1)
   companionXp Int @default(0)
   companionCreatedAt DateTime?
-
+  houseLevel Int @default(1)  
+  memories CompanionMemory[]
   accounts Account[]
   sessions Session[]
 
@@ -249,4 +250,26 @@ model GrowthEvent {
   importance Int @default(1)
 
   createdAt DateTime @default(now())
+}
+
+model CompanionMemory {
+  id          String   @id @default(cuid())
+
+  userId      String
+
+  title       String
+  content     String
+
+  type        String
+
+  importance  Int      @default(1)
+
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([importance])
+  @@index([createdAt])
 }
