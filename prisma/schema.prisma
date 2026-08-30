@@ -183,19 +183,29 @@ model User {
 
   displayName String?
 
+  // Profile
+  goal              String?
+  ageGroup          String?
+  preferredLanguage String  @default("en")
+  country           String?
+  city              String?
+  profileCompleted  Boolean @default(false)
+
   // Companion
-  companionSetupCompleted Boolean           @default(false)
+  companionSetupCompleted Boolean   @default(false)
   companionName           String?
   companionGender         String?
   companionType           String?
   companionAvatar         String?
-  companionLevel          Int               @default(1)
-  companionXp             Int               @default(0)
+  companionLevel          Int       @default(1)
+  companionXp             Int       @default(0)
   companionCreatedAt      DateTime?
-  houseLevel              Int               @default(1)
-  memories                CompanionMemory[]
-  accounts                Account[]
-  sessions                Session[]
+  houseLevel              Int       @default(1)
+
+  memories CompanionMemory[]
+
+  accounts Account[]
+  sessions Session[]
 
   projects Project[]
   tasks    Task[]
