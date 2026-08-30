@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Time100 Growth Seed</title>
+  <desc id="desc">A green growth sprout above a blue timeline node.</desc>
+
+  <defs>
+    <linearGradient id="stem" x1="20" y1="12" x2="46" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A3FF3F"/>
+      <stop offset="0.48" stop-color="#35E58A"/>
+      <stop offset="1" stop-color="#20B8FF"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="12" y1="48" x2="52" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#20B8FF"/>
+      <stop offset="0.55" stop-color="#36E6A0"/>
+      <stop offset="1" stop-color="#725CFF"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M32 45V29" fill="none" stroke="url(#stem)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M31 29C23 29 16 23 15 14C24 14 31 19 31 29Z" fill="url(#stem)"/>
+  <path d="M33 31C34 21 41 16 50 16C49 25 42 31 33 31Z" fill="url(#stem)"/>
+
+  <path d="M12 49H52" fill="none" stroke="url(#ring)" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="12" cy="49" r="5" fill="#07111F" stroke="#20B8FF" stroke-width="4"/>
+  <circle cx="32" cy="49" r="7" fill="#07111F" stroke="#35E58A" stroke-width="5"/>
+  <circle cx="52" cy="49" r="5" fill="#07111F" stroke="#725CFF" stroke-width="4"/>
+</svg>

@@ -7,6 +7,7 @@ import TaskBoard from "@/components/dashboard/TaskBoard";
 import ProjectProgressSection from "@/components/dashboard/ProjectProgressSection";
 import { useTime100 } from "@/hooks/useTime100";
 import { getMessages } from "@/lib/translations";
+import AddProjectSection from "@/components/dashboard/AddProjectSection";
 
 export default function Time100Dashboard() {
   const app = useTime100();
@@ -22,14 +23,14 @@ export default function Time100Dashboard() {
 
   if (!app.ready) {
     return (
-      <main className="min-h-screen bg-slate-50 p-10 dark:bg-slate-950 dark:text-white">
-        Loading Time100...
-      </main>
+        <main className="min-h-screen bg-slate-950 p-10 text-white">
+          Loading Time100...
+        </main>
     );
   }
 
   return (
-    <main className={app.preferences.theme === "dark" ? "dark" : ""}>
+    <main className="dark">
       <div className="min-h-screen bg-slate-50 text-slate-900 transition dark:bg-slate-950 dark:text-white">
         <DashboardHeader
           preferences={app.preferences}
@@ -41,9 +42,7 @@ export default function Time100Dashboard() {
           onLanguageChange={(language) =>
             app.setPreferences({ ...app.preferences, language })
           }
-          onThemeChange={(theme) =>
-            app.setPreferences({ ...app.preferences, theme })
-          }
+
         />
 
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
@@ -58,11 +57,13 @@ export default function Time100Dashboard() {
               },
             ]}
           />
-
+          <AddProjectSection
+              language={app.preferences.language}
+            />
           <AddTaskSection
             projects={app.projects}
             language={app.preferences.language}
-            defaultProjectId={app.preferences.defaultProjectId}
+            defaultProjectId={app.projects[0]?.id ?? ""}
             onAdd={app.addTask}
           />
 

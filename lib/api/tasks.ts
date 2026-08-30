@@ -7,14 +7,26 @@ export async function fetchTasks(): Promise<Task[]> {
   return payload.data;
 }
 
-export async function createTaskRequest(input: TaskCreateInput): Promise<Task> {
+export async function createTaskRequest(input: TaskCreateInput) {
+  console.log("TASK INPUT", input);
+
   const response = await fetch("/api/tasks", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(input),
   });
-  if (!response.ok) throw new Error("Failed to create task");
-  return response.json();
+
+  const result = await response.json();
+
+  console.log("TASK RESPONSE", result);
+
+  if (!response.ok) {
+    throw new Error(result.error ?? "Failed to create task");
+  }
+
+  return result;
 }
 
 export async function updateTaskRequest(

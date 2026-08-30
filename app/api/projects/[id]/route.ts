@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
 const allowedFields = [
   "title",
@@ -14,32 +14,27 @@ const allowedFields = [
 
 export async function PATCH(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await context.params;
-
     const body = await request.json();
 
-    const oldProject =
-      await prisma.project.findUnique({
-        where: { id },
-      });
+    const oldProject = await prisma.project.findFirst({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+    });
 
     if (!oldProject) {
-      return NextResponse.json(
-        { error: "Project not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
     const data: Record<string, unknown> = {};
@@ -52,6 +47,13 @@ export async function PATCH(
 
     if (typeof data.title === "string") {
       data.title = data.title.trim();
+
+      if (!data.title) {
+        return NextResponse.json(
+          { error: "Project title is required" },
+          { status: 400 },
+        );
+      }
     }
 
     if (data.progress !== undefined) {
@@ -70,56 +72,36 @@ export async function PATCH(
       data.actual = Number(data.actual);
     }
 
-    const project =
-      await prisma.project.update({
-        where: { id },
-        data,
-      });
+    const project = await prisma.project.update({
+      where: { id: oldProject.id },
+      data,
+    });
 
     const justCompleted =
-      oldProject.status !== "DONE" &&
-      project.status === "DONE";
-
-      console.log(
-        "PROJECT EVENT CHECK",
-        oldProject.status,
-        "->",
-        project.status,
-        "justCompleted:",
-        justCompleted
-      );
+      oldProject.status !== "DONE" && project.status === "DONE";
 
     if (justCompleted) {
+      const existingEvent = await prisma.growthEvent.findFirst({
+        where: {
+          userId: session.user.id,
+          projectId: project.id,
+          type: "PROJECT_COMPLETED",
+        },
+      });
 
-      console.log(
-        "CREATING PROJECT_COMPLETED",
-        project.title
-      );
-      const existing =
-        await prisma.growthEvent.findFirst({
-          where: {
-            projectId: project.id,
-            type: "PROJECT_COMPLETED",
-          },
-        });
-
-      if (!existing) {
-        await prisma.growthEvent.create({
-          data: {
-            userId: session.user.id,
-            projectId: project.id,
-
-            type: "PROJECT_COMPLETED",
-
-            title: project.title,
-
-            description: `项目完成：${project.title}`,
-
-            importance: 10,
-          },
-        });
-
-        await prisma.companionMemory.create({
+      if (!existingEvent) {
+        await prisma.$transaction([
+          prisma.growthEvent.create({
+            data: {
+              userId: session.user.id,
+              projectId: project.id,
+              type: "PROJECT_COMPLETED",
+              title: project.title,
+              description: `项目完成：${project.title}`,
+              importance: 10,
+            },
+          }),
+          prisma.companionMemory.create({
             data: {
               userId: session.user.id,
               title: project.title,
@@ -127,46 +109,57 @@ export async function PATCH(
               type: "PROJECT_COMPLETED",
               importance: 5,
             },
-          });
+          }),
+        ]);
       }
     }
 
     return NextResponse.json(project);
   } catch (error) {
-    console.error(
-      "PATCH /api/projects/[id] failed",
-      error
-    );
+    console.error("PATCH /api/projects/[id] failed", error);
 
     return NextResponse.json(
       { error: "Failed to update project" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   _request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await context.params;
 
-    const project =
-      await prisma.project.delete({
-        where: { id },
-      });
+    const project = await prisma.project.findFirst({
+      where: {
+        id,
+        userId: session.user.id,
+      },
+    });
 
-    return NextResponse.json(project);
+    if (!project) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    }
+
+    const deletedProject = await prisma.project.delete({
+      where: { id: project.id },
+    });
+
+    return NextResponse.json(deletedProject);
   } catch (error) {
-    console.error(
-      "DELETE /api/projects/[id] failed",
-      error
-    );
+    console.error("DELETE /api/projects/[id] failed", error);
 
     return NextResponse.json(
       { error: "Failed to delete project" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,35 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(
-  request: NextRequest
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(
-      request.url
-    );
+    const session = await auth();
 
-    const page = Math.max(
-      Number(searchParams.get("page") ?? 1),
-      1
-    );
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    const limit = Math.min(
-      Number(searchParams.get("limit") ?? 50),
-      100
-    );
+    const { searchParams } = new URL(request.url);
+    const rawPage = Number(searchParams.get("page") ?? 1);
+    const rawLimit = Number(searchParams.get("limit") ?? 50);
+    const page = Number.isFinite(rawPage) ? Math.max(rawPage, 1) : 1;
+    const limit = Number.isFinite(rawLimit)
+      ? Math.min(Math.max(rawLimit, 1), 100)
+      : 50;
 
-    const tasks = await prisma.task.findMany({
-      orderBy: [
-        { status: "asc" },
-        { order: "asc" },
-        { createdAt: "asc" },
-      ],
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+    const where = { userId: session.user.id };
 
-    const total = await prisma.task.count();
+    const [tasks, total] = await prisma.$transaction([
+      prisma.task.findMany({
+        where,
+        orderBy: [
+          { status: "asc" },
+          { order: "asc" },
+          { createdAt: "asc" },
+        ],
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.task.count({ where }),
+    ]);
 
     return NextResponse.json({
       data: tasks,
@@ -37,105 +40,76 @@ export async function GET(
         page,
         limit,
         total,
-        totalPages: Math.ceil(
-          total / limit
-        ),
+        totalPages: Math.ceil(total / limit),
       },
     });
   } catch (error) {
-    console.error(
-      "GET /api/tasks failed",
-      error
-    );
+    console.error("GET /api/tasks failed", error);
 
     return NextResponse.json(
-      {
-        error: "Failed to load tasks",
-      },
-      {
-        status: 500,
-      }
+      { error: "Failed to load tasks" },
+      { status: 500 },
     );
   }
 }
 
-export async function POST(
-  request: NextRequest
-) {
+export async function POST(request: NextRequest) {
   try {
-    const body =
-      await request.json();
+    const session = await auth();
 
-    if (
-      !body.title?.trim() ||
-      !body.projectId
-    ) {
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const title = typeof body.title === "string" ? body.title.trim() : "";
+    const projectId =
+      typeof body.projectId === "string" ? body.projectId.trim() : "";
+
+    if (!title || !projectId) {
       return NextResponse.json(
-        {
-          error:
-            "title and projectId are required",
-        },
-        {
-          status: 400,
-        }
+        { error: "title and projectId are required" },
+        { status: 400 },
       );
     }
 
-    const task =
-      await prisma.task.create({
-        data: {
-          title: body.title.trim(),
-          description:
-            body.description ?? null,
-          projectId:
-            body.projectId,
-
-          status:
-            body.status ?? "TODO",
-
-          priority:
-            body.priority ??
-            "MEDIUM",
-
-          order:
-            Number(body.order ?? 0),
-
-          estimated: Number(
-            body.estimated ?? 0
-          ),
-
-          actual: Number(
-            body.actual ?? 0
-          ),
-
-          dueDate: body.dueDate
-            ? new Date(
-                body.dueDate
-              )
-            : null,
-        },
-      });
-
-    return NextResponse.json(
-      task,
-      {
-        status: 201,
-      }
-    );
-  } catch (error) {
-    console.error(
-      "POST /api/tasks failed",
-      error
-    );
-
-    return NextResponse.json(
-      {
-        error:
-          "Failed to create task",
+    const project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        userId: session.user.id,
       },
-      {
-        status: 500,
-      }
+      select: { id: true },
+    });
+
+    if (!project) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    }
+
+    const task = await prisma.task.create({
+      data: {
+        userId: session.user.id,
+        title,
+        description:
+          typeof body.description === "string"
+            ? body.description.trim() || null
+            : null,
+        projectId: project.id,
+        status: body.status ?? "TODO",
+        priority: body.priority ?? "MEDIUM",
+        order: Number(body.order ?? 0),
+        estimated: Number(body.estimated ?? 0),
+        actual: Number(body.actual ?? 0),
+        dueDate: body.dueDate ? new Date(body.dueDate) : null,
+      },
+    });
+
+    return NextResponse.json(task, { status: 201 });
+  } catch (error) {
+    console.error("POST /api/tasks failed", error);
+
+    return NextResponse.json(
+      { error: "Failed to create task" },
+      { status: 500 },
     );
   }
 }

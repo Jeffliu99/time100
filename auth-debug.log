@@ -1,0 +1,112 @@
+
+> time100@0.1.0 predev
+> npm run docs:sync
+
+
+> time100@0.1.0 docs:sync
+> node scripts/sync-docs.mjs
+
+âœ“ docs synced to content
+
+> time100@0.1.0 dev
+> next dev
+
+â–² Next.js 16.3.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.2.34:3000
+- Environments: .env.local
+âœ“ Ready in 843ms
+âœ“ Running next.config.ts took 71ms
+
+ GET /landing 404 in 572ms (next.js: 310ms, application-code: 261ms)
+ GET /api/auth/session 200 in 1350ms (next.js: 1203ms, application-code: 146ms)
+ GET /api/auth/session 200 in 26ms (next.js: 13ms, application-code: 12ms)
+ GET /api/auth/session 200 in 17ms (next.js: 5ms, application-code: 12ms)
+ GET /api/auth/session 200 in 21ms (next.js: 6ms, application-code: 16ms)
+(node:18088) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ GET /api/auth/session 200 in 474ms (next.js: 27ms, application-code: 447ms)
+ GET /api/auth/session 200 in 63ms (next.js: 7ms, application-code: 56ms)
+ GET /api/auth/session 200 in 66ms (next.js: 6ms, application-code: 59ms)
+ GET /api/auth/session 200 in 55ms (next.js: 6ms, application-code: 49ms)
+ GET / 307 in 556ms (next.js: 164ms, application-code: 392ms)
+ GET /dashboard 404 in 145ms (next.js: 19ms, application-code: 126ms)
+ GET /api/auth/session 200 in 96ms (next.js: 21ms, application-code: 75ms)
+ GET /api/auth/session 200 in 60ms (next.js: 8ms, application-code: 52ms)
+ GET /api/auth/session 200 in 56ms (next.js: 6ms, application-code: 50ms)
+ GET /api/auth/session 200 in 53ms (next.js: 6ms, application-code: 48ms)
+ GET /api/auth/session 200 in 214ms (next.js: 21ms, application-code: 194ms)
+ GET /api/auth/session 200 in 59ms (next.js: 7ms, application-code: 52ms)
+ GET /api/auth/session 200 in 178ms (next.js: 17ms, application-code: 161ms)
+ GET /api/auth/session 200 in 51ms (next.js: 6ms, application-code: 45ms)
+ GET /api/auth/session 200 in 75ms (next.js: 24ms, application-code: 51ms)
+ GET /api/auth/session 200 in 56ms (next.js: 7ms, application-code: 49ms)
+ GET /api/auth/session 200 in 255ms (next.js: 21ms, application-code: 234ms)
+ GET /api/auth/session 200 in 72ms (next.js: 10ms, application-code: 63ms)
+ GET /api/auth/session 200 in 214ms (next.js: 22ms, application-code: 192ms)
+ GET /api/auth/session 200 in 53ms (next.js: 7ms, application-code: 46ms)
+ GET /dashboard 404 in 164ms (next.js: 37ms, application-code: 127ms)
+ GET /api/auth/session 200 in 70ms (next.js: 20ms, application-code: 50ms)
+ GET /api/auth/session 200 in 58ms (next.js: 7ms, application-code: 51ms)
+ GET /api/auth/session 200 in 55ms (next.js: 7ms, application-code: 48ms)
+ GET /api/auth/session 200 in 59ms (next.js: 9ms, application-code: 50ms)
+ GET /api/auth/session 200 in 73ms (next.js: 21ms, application-code: 52ms)
+ GET /api/auth/session 200 in 69ms (next.js: 7ms, application-code: 62ms)
+ GET /api/auth/session 200 in 80ms (next.js: 19ms, application-code: 61ms)
+ GET /api/auth/session 200 in 52ms (next.js: 6ms, application-code: 47ms)
+ GET /api/auth/session 200 in 223ms (next.js: 26ms, application-code: 197ms)
+ GET /api/auth/session 200 in 54ms (next.js: 8ms, application-code: 46ms)
+âœ“ Compiled in 706ms
+ GET /landing 404 in 586ms (next.js: 345ms, application-code: 240ms)
+ GET /landing 404 in 639ms (next.js: 25ms, application-code: 614ms)
+â¨¯ Error: The default export is not a React Component in "/dashboard/page"
+    at ignore-listed frames
+â¨¯ Error: The default export is not a React Component in "/dashboard/page"
+    at ignore-listed frames {
+  page: '/dashboard'
+}
+ GET /landing 404 in 1546ms (next.js: 88ms, application-code: 1458ms)
+ GET /landing 404 in 1637ms (next.js: 50ms, application-code: 1587ms)
+ GET /api/auth/session 200 in 287ms (next.js: 169ms, application-code: 118ms)
+ GET /api/auth/session 200 in 40ms (next.js: 8ms, application-code: 31ms)
+ GET /api/auth/session 200 in 45ms (next.js: 19ms, application-code: 26ms)
+ GET /api/auth/session 200 in 19ms (next.js: 7ms, application-code: 13ms)
+ GET /dashboard 500 in 5.0s (next.js: 4.6s, application-code: 388ms)
+â¨¯ Error: The default export is not a React Component in "/dashboard/page"
+    at ignore-listed frames
+â¨¯ Error: The default export is not a React Component in "/dashboard/page"
+    at ignore-listed frames {
+  page: '/dashboard'
+}
+â¨¯ Error: The default export is not a React Component in "/dashboard/page"
+    at ignore-listed frames
+â¨¯ Error: The default export is not a React Component in "/dashboard/page"
+    at ignore-listed frames {
+  page: '/dashboard'
+}
+ GET /dashboard 500 in 239ms (next.js: 128ms, application-code: 110ms)
+ GET /dashboard 500 in 228ms (next.js: 194ms, application-code: 34ms)
+â¨¯ Error: The default export is not a React Component in "/dashboard/page"
+    at ignore-listed frames
+â¨¯ Error: The default export is not a React Component in "/dashboard/page"
+    at ignore-listed frames {
+  page: '/dashboard'
+}
+ GET /dashboard 500 in 54ms (next.js: 23ms, application-code: 31ms)
+[browser] Uncaught Error: The default export is not a React Component in "/dashboard/page"
+ GET /landing 404 in 119ms (next.js: 29ms, application-code: 89ms)
+ GET /landing 404 in 140ms (next.js: 30ms, application-code: 110ms)
+ GET /api/auth/session 200 in 78ms (next.js: 39ms, application-code: 39ms)
+ GET /api/auth/session 200 in 31ms (next.js: 14ms, application-code: 17ms)
+ GET /api/auth/session 200 in 22ms (next.js: 8ms, application-code: 14ms)
+ GET /api/auth/session 200 in 19ms (next.js: 7ms, application-code: 12ms)
+ÖÕÖ¹Åú´¦Àí²Ù×÷Âð(Y/N)? [?25h
+
+^C

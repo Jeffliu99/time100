@@ -1,5 +1,12 @@
-import Time100Dashboard from "@/components/dashboard/Time100Dashboard";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function HomePage() {
-  return <Time100Dashboard />;
+export default async function HomePage() {
+  const session = await auth();
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
+  redirect("/landing");
 }

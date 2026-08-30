@@ -1,192 +1,110 @@
 "use client";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
-import { useEffect, useState } from "react";
-import type {
-  Language,
-  Priority,
-  Project,
-  TaskStatus,
-} from "@/types";
-import {
-  getMessages,
-  priorityLabels,
-} from "@/lib/translations";
+import { FormEvent, useEffect, useState } from "react";
+import type { Language, Project, TaskCreateInput } from "@/types";
 
 interface Props {
   projects: Project[];
   language: Language;
   defaultProjectId: string;
-  onAdd: (task: {
-    title: string;
-    projectId: string;
-    phaseId: string;
-    status: TaskStatus;
-    priority: Priority;
-    estimated: number;
-    dueDate?: string;
-  }) => void;
+  disabled?: boolean;
+  onAdd: (input: TaskCreateInput) => Promise<unknown> | unknown;
 }
 
-export default function AddTaskForm({
-  projects,
-  language,
-  defaultProjectId,
-  onAdd,
-}: Props) {
-  const t = getMessages(language);
-
+export default function AddTaskForm({ projects, language, defaultProjectId, disabled = false, onAdd }: Props) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [projectId, setProjectId] = useState(
-    defaultProjectId || ""
-  );
-  const [priority, setPriority] =
-    useState<Priority>("MEDIUM");
-  const [estimated, setestimated] =
-    useState(1);
-  const [dueDate, setDueDate] =  useState<Date | null>(null);
+  const validDefaultProjectId = projects.some(
+  (project) => project.id === defaultProjectId
+)
+  ? defaultProjectId
+  : projects[0]?.id || "";
 
-  // 数据库项目异步加载完成后，自动选择第一个项目
-  useEffect(() => {
-    if (
-      projects.length > 0 &&
-      !projects.some((project) => project.id === projectId)
-    ) {
-      setProjectId(defaultProjectId || projects[0].id);
-    }
-  }, [projects, projectId, defaultProjectId]);
+const [projectId, setProjectId] = useState(validDefaultProjectId);
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const [priority, setPriority] = useState("MEDIUM");
+  const [estimated, setEstimated] = useState(1);
+  const [dueDate, setDueDate] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-    const cleanTitle = title.trim();
+useEffect(() => {
+  const validDefaultId = projects.some(
+    (project) => project.id === defaultProjectId
+  )
+    ? defaultProjectId
+    : projects[0]?.id || "";
 
-    if (!cleanTitle || !projectId) {
-      return;
-    }
+  if (!projects.some((project) => project.id === projectId)) {
+    setProjectId(validDefaultId);
+  }
 
-    onAdd({
-      title: cleanTitle,
-      projectId,
-      phaseId: "",
-      status: "TODO",
-      priority,
-      estimated,
-     dueDate: dueDate ? dueDate.toISOString() : undefined,
-    });
-
-    setTitle("");
-    setPriority("MEDIUM");
-    setestimated(1);
-    setDueDate(null);
+  if (disabled) {
     setOpen(false);
+  }
+}, [projects, projectId, defaultProjectId, disabled]);
+
+
+  const zh = language === "zh";
+
+  function handleOpen() {
+    if (disabled) return;
+    setOpen(true);
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (disabled || submitting || !title.trim() || !projectId) return;
+
+    setSubmitting(true);
+    try {
+      await onAdd({
+        title: title.trim(),
+        projectId,
+        priority,
+        estimated,
+        dueDate: dueDate || undefined,
+      } as TaskCreateInput);
+      setTitle("");
+      setDueDate("");
+      setOpen(false);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (!open) {
     return (
       <button
         type="button"
-        onClick={() => setOpen(true)}
-        className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm"
+        onClick={handleOpen}
+        disabled={disabled}
+        aria-disabled={disabled}
+        className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-[transform,opacity] duration-200 hover:scale-[1.02] hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:transform-none motion-reduce:transition-none"
       >
-        + {t.addTask}
+        {zh ? "+ 添加任务" : "+ Add Task"}
       </button>
     );
   }
 
   return (
-    <form
-      onSubmit={submit}
-      className="grid gap-3 rounded-2xl border bg-white p-4 shadow-sm md:grid-cols-6 dark:border-slate-700 dark:bg-slate-800"
-    >
-      <input
-        autoFocus
-        required
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
-        placeholder={t.taskTitle}
-        className="rounded-lg border px-3 py-2 md:col-span-2 dark:border-slate-600 dark:bg-slate-900"
-      />
-
-      <select
-        required
-        value={projectId}
-        onChange={(event) => setProjectId(event.target.value)}
-        className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
-      >
-        <option value="" disabled>
-          Select project
-        </option>
-
-        {projects.map((project) => (
-          <option key={project.id} value={project.id}>
-            {project.title}
-          </option>
-        ))}
-      </select>
-
-      <select
-        value={priority}
-        onChange={(event) =>
-          setPriority(event.target.value as Priority)
-        }
-        className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
-      >
-        {(
-          ["HIGH","MEDIUM", "LOW"] as Priority[]
-        ).map((item) => (
-          <option key={item} value={item}>
-            {priorityLabels[language][item]}
-          </option>
-        ))}
-      </select>
-
-      <input
-        type="number"
-        min="0.5"
-        step="0.5"
-        value={estimated}
-        onChange={(event) =>
-          setestimated(Number(event.target.value))
-        }
-        className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
-      />
-
-<DatePicker
-  selected={dueDate}
-  onChange={(date: Date | null) => setDueDate(date)}
-  dateFormat={
-    language === "en"
-      ? "yyyy-MM-dd"
-      : "yyyy年MM月dd日"
-  }
-  placeholderText={
-    language === "en"
-      ? "Select Date"
-      : "选择日期"
-  }
-  className="rounded-lg border px-3 py-2 dark:border-slate-600 dark:bg-slate-900"
-/>
-
-      <div className="flex gap-2 md:col-span-6 md:justify-end">
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="rounded-lg border px-4 py-2"
-        >
-          {t.cancel}
-        </button>
-
-        <button
-          type="submit"
-          disabled={!projectId}
-          className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {t.save}
-        </button>
-      </div>
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-slate-100 p-4 dark:border-slate-700 dark:bg-slate-800">
+      <fieldset disabled={disabled || submitting} className="grid gap-3 md:grid-cols-[1.5fr_1fr_0.8fr_0.7fr_1fr_auto]">
+        <input value={title} onChange={(event) => setTitle(event.target.value)} placeholder={zh ? "任务名称" : "Task title"} required className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600" />
+        <select value={projectId} onChange={(event) => setProjectId(event.target.value)} required className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600">
+          {projects.map((project) => <option key={project.id} value={project.id}>{project.title}</option>)}
+        </select>
+        <select value={priority} onChange={(event) => setPriority(event.target.value)} className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600">
+          <option value="LOW">{zh ? "低" : "Low"}</option>
+          <option value="MEDIUM">{zh ? "中" : "Medium"}</option>
+          <option value="HIGH">{zh ? "高" : "High"}</option>
+        </select>
+        <input type="number" min={0} value={estimated} onChange={(event) => setEstimated(Number(event.target.value))} className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600" />
+        <input type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600" />
+        <div className="flex gap-2">
+          <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold dark:border-slate-600">{zh ? "取消" : "Cancel"}</button>
+          <button type="submit" disabled={!title.trim() || !projectId || submitting} className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{zh ? "保存" : "Save"}</button>
+        </div>
+      </fieldset>
     </form>
   );
 }

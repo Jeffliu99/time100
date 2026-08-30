@@ -1,79 +1,87 @@
-# Time100 English Documentation Index
+# Time100 Documentation Index
 
-Time100 is a Growth Operating System. This index lists the English product and development specifications maintained under `docs/`.
+Generated: 2026-08-30T15:38:18.207Z
 
-## Documentation Structure
+---
 
-```text
-docs/
-├── index.md
-├── README.md
-├── time100-design-spec.md
-├── roadmap.md
-├── database-design.md
-├── api-spec.md
-├── changelog.md
-└── features/
-    ├── index.md
-    ├── growth-tree.md
-    ├── project-timeline.md
-    ├── task-timeline.md
-    └── companion/
-        ├── index.md
-        ├── overview.md
-        ├── setup-wizard.md
-        ├── house.md
-        ├── memory.md
-        ├── level.md
-        ├── dialog.md
-        └── welcome-messages.md
-```
+# Current Priorities
 
-## Core Documentation
+## P0
 
-| Document | Purpose |
-| --- | --- |
-| [Documentation Home](./index.md) | Main entry point for Time100 documentation |
-| [Documentation Guide](./README.md) | Documentation structure and development workflow |
-| [Design Specification](./time100-design-spec.md) | Master product specification and Single Source of Truth |
-| [Roadmap](./roadmap.md) | V1, V2, and V3 development roadmap |
-| [Database Design](./database-design.md) | Core models and data rules |
-| [API Specification](./api-spec.md) | Authentication and core API contracts |
-| [Change Log](./changelog.md) | Specification changes and dependency notes |
+- Profile Onboarding
+- Homepage
+- Auth Guard
+- Microsoft Login
 
-## Feature Documentation
+## P1
 
-| Document | Purpose |
-| --- | --- |
-| [Features Home](./features/index.md) | Entry point for all feature specifications |
-| [Growth Tree](./features/growth-tree.md) | Hierarchical growth-world navigation |
-| [Project Timeline](./features/project-timeline.md) | Timeline for a single project's growth journey |
-| [Task Timeline](./features/task-timeline.md) | Lifecycle timeline for a single task |
+- About Page
+- FAQ
+- Contact
+- Privacy Policy
+- Terms of Service
 
-## Companion System
+## P2
 
-| Document | Purpose |
-| --- | --- |
-| [Companion Home](./features/companion/index.md) | Entry point for the Companion System |
-| [Overview](./features/companion/overview.md) | Companion purpose, principles, and boundaries |
-| [Setup Wizard](./features/companion/setup-wizard.md) | Companion selection and onboarding flow |
-| [House](./features/companion/house.md) | Fixed Companion House interaction and motion |
-| [Memory](./features/companion/memory.md) | Companion memory sources, controls, and rules |
-| [Level](./features/companion/level.md) | Companion progression and level rules |
-| [Dialog](./features/companion/dialog.md) | Nova's voice, message categories, and rendering rules |
-| [Welcome Messages](./features/companion/welcome-messages.md) | Welcome-message triggers and selection rules |
+- Nova V1 Design
 
-## Specification First Development
+## P3
 
-```text
-Idea
--> Design Spec
--> Feature Spec
--> Implementation
--> Build
--> Review
--> Commit
--> Push
-```
+- Voice Chat
+- Nova Memory
+- Achievement System
 
-Specifications are the Single Source of Truth. Update the relevant specification before changing implementation code.
+---
+
+# Documents
+
+- docs/account/login-providers.md
+- docs/account/profile-onboarding.md
+- docs/api-spec.md
+- docs/archive/roadmap-2026-08.md
+- docs/archive/time100-design-spec-v0.md
+- docs/changelog.md
+- docs/database-design.md
+- docs/design/homepage.md
+- docs/design/mobile-first.md
+- docs/design/navigation-footer.md
+- docs/features/companion/dialog.md
+- docs/features/companion/house.md
+- docs/features/companion/index.md
+- docs/features/companion/level.md
+- docs/features/companion/memory.md
+- docs/features/companion/nova-memory.md
+- docs/features/companion/nova.md
+- docs/features/companion/overview.md
+- docs/features/companion/setup-wizard.md
+- docs/features/companion/welcome-messages.md
+- docs/features/completion-celebration.md
+- docs/features/feedback.md
+- docs/features/growth-tree.md
+- docs/features/index.md
+- docs/features/project-timeline.md
+- docs/features/projects-tasks.md
+- docs/features/task-timeline.md
+- docs/index.md
+- docs/product/membership.md
+- docs/product/product-docs-readme.md
+- docs/product/product-requirements.md
+- docs/product/release-checklist.md
+- docs/product/roadmap.md
+- docs/product/version-history.md
+- docs/README.md
+- docs/security/auth-security.md
+- docs/security/privacy-data.md
+
+
+---
+
+# Product
+
+Time100
+
+Turn Ideas Into Reality
+
+A Product of eSeeSKy Inc.
+
+Version: v1.0 RC1

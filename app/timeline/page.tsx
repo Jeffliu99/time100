@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
 function getEventStyle(importance: number) {
   if (importance >= 10) {
@@ -49,7 +50,7 @@ export default async function TimelinePage() {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return <div>请先登录</div>;
+    redirect("/login");
   }
 
   const events = await prisma.growthEvent.findMany({

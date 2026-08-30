@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-labelledby="title desc">
+  <title id="title">Time100 light theme logo</title>
+  <desc id="desc">Growth sprout and timeline symbol with the Time100 wordmark and slogan.</desc>
+
+  <defs>
+    <linearGradient id="growth" x1="25" y1="20" x2="175" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#84CC16"/>
+      <stop offset="0.5" stop-color="#10B981"/>
+      <stop offset="1" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="time" x1="240" y1="0" x2="650" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#059669"/>
+      <stop offset="0.5" stop-color="#0284C7"/>
+      <stop offset="1" stop-color="#6D28D9"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="720" height="220" rx="36" fill="#F8FAFC"/>
+
+  <g transform="translate(28 20)" filter="url(#softGlow)">
+    <path d="M92 126V72" fill="none" stroke="url(#growth)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M89 77C61 76 39 56 36 27C65 27 89 47 89 77Z" fill="url(#growth)"/>
+    <path d="M96 80C99 48 122 31 153 32C150 63 127 81 96 80Z" fill="url(#growth)"/>
+    <path d="M28 142H166" fill="none" stroke="url(#time)" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="28" cy="142" r="12" fill="#F8FAFC" stroke="#0284C7" stroke-width="7"/>
+    <circle cx="92" cy="142" r="17" fill="#F8FAFC" stroke="#10B981" stroke-width="8"/>
+    <circle cx="166" cy="142" r="12" fill="#F8FAFC" stroke="#6D28D9" stroke-width="7"/>
+  </g>
+
+  <g transform="translate(225 52)">
+    <text x="0" y="70" fill="#0F172A" font-family="Inter, Geist, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-3">Time</text>
+    <text x="174" y="70" fill="url(#time)" font-family="Inter, Geist, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-3">100</text>
+    <text x="4" y="112" fill="#475569" font-family="Inter, Geist, Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="5">TURN IDEAS INTO REALITY</text>
+    <text x="4" y="145" fill="#64748B" font-family="Inter, Geist, Arial, sans-serif" font-size="14" font-weight="600" letter-spacing="2">GROWTH OPERATING SYSTEM · v1.0 RC1</text>
+  </g>
+</svg>

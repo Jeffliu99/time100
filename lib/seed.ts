@@ -6,6 +6,6 @@ export const seedTasks = [];
 
 export const defaultPreferences: UserPreferences = {
   language: "zh",
-  theme: "light",
-  defaultProjectId: "time100",
+  theme: "dark",
+  defaultProjectId: "",
 };
