@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { CompanionHouse } from "@/components/companion/CompanionHouse";
+import { CompanionHouseGate } from "@/components/companion/CompanionHouseGate";
 
 import Providers from "@/components/providers";
 
@@ -35,7 +35,7 @@ export default function RootLayout({
         <Providers>
           {children}
 
-          <CompanionHouse />
+          <CompanionHouseGate />
         </Providers>
       </body>
     </html>

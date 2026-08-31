@@ -7,6 +7,28 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Motion */
+  --motion-standard: cubic-bezier(
+    0.22,
+    1,
+    0.36,
+    1
+  );
+
+  /* Companion */
+  --halo-blue: #3b82f6;
+  --halo-purple: #8b5cf6;
+  --halo-pink: #d946ef;
+
+  /* XP */
+  --xp-blue: #60a5fa;
+  --xp-purple: #8b5cf6;
+  --xp-gold: #f59e0b;
+
+  /* Shared glow */
+  --level-glow:
+    0 0 20px rgb(139 92 246 / 40%);
 }
 
 .dark {
@@ -24,6 +46,35 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+/* =========================================
+   Base
+========================================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+
+  background-color: var(--background);
+  color: var(--foreground);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  text-rendering:
+    optimizeLegibility;
+
+  -webkit-font-smoothing:
+    antialiased;
+
+  -moz-osx-font-smoothing:
+    grayscale;
 }
 
 /* =========================================
@@ -47,24 +98,18 @@ body {
 }
 
 /* =========================================
-   Base
+   Mobile Optimizations
 ========================================= */
 
-html {
-  scroll-behavior: smooth;
+* {
+  -webkit-tap-highlight-color:
+    transparent;
 }
 
-body {
-  min-height: 100vh;
-
-  background-color: var(--background);
-  color: var(--foreground);
-
-  font-family: Arial, Helvetica, sans-serif;
-
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+button,
+[role="button"] {
+  touch-action:
+    manipulation;
 }
 
 /* =========================================
@@ -90,16 +135,19 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.4);
+  background:
+    rgba(100, 116, 139, 0.4);
+
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
+  background:
+    rgba(100, 116, 139, 0.7);
 }
 
 /* =========================================
-   Focus Styles
+   Focus
 ========================================= */
 
 :focus-visible {
@@ -108,7 +156,7 @@ body {
 }
 
 /* =========================================
-   Utility Classes
+   Shared Utility Classes
 ========================================= */
 
 .page-transition {
@@ -127,21 +175,21 @@ body {
     color 300ms ease;
 }
 
-/* =========================================
-   Reduced Motion Support
-========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-  html,
-  body,
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-    animation: none !important;
-  }
- 
+.time100-glow {
+  box-shadow:
+    0 0 12px rgb(59 130 246 / 35%),
+    0 0 28px rgb(139 92 246 / 25%),
+    0 0 48px rgb(217 70 239 / 15%);
 }
+
+.level-glow {
+  box-shadow:
+    var(--level-glow);
+}
+
+/* =========================================
+   Growth Pulse
+========================================= */
 
 @keyframes growthPulse {
   0% {
@@ -156,5 +204,22 @@ body {
   100% {
     opacity: 0;
     transform: scale(2.2);
+  }
+}
+
+.growth-pulse {
+  animation:
+    growthPulse 2s ease-out;
+}
+
+/* =========================================
+   Reduced Motion
+========================================= */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+  html {
+    scroll-behavior: auto;
   }
 }
