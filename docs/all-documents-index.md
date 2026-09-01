@@ -1,6 +1,6 @@
 # Time100 Documentation Index
 
-Generated: 2026-09-01T19:37:54.386Z
+Generated: 2026-09-01T21:21:33.093Z
 
 ---
 
@@ -74,6 +74,7 @@ Generated: 2026-09-01T19:37:54.386Z
 - docs/product/roadmap.md
 - docs/product/version-history.md
 - docs/README.md
+- docs/releases/README_Time100_v0.2.1.md
 - docs/security/auth-security.md
 - docs/security/privacy-data.md
 
