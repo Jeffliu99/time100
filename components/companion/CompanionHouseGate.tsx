@@ -3,13 +3,19 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { CompanionHouse } from "./CompanionHouse";
+import  CompanionHouse  from "./CompanionHouse";
 
 type CompanionProfile = {
   profileCompleted: boolean;
-  companionSetupCompleted?: boolean;
+
+  preferredLanguage?: string;
+
   companionName: string | null;
   companionAvatar: string | null;
+
+  companionType?: string | null;
+  companionLevel?: number | null;
+  companionXp?: number | null;
 };
 
 const HIDDEN_ROUTES = new Set([
@@ -73,8 +79,12 @@ export function CompanionHouseGate() {
 
   return (
     <CompanionHouse
-      companionName={profile.companionName}
-      companionAvatar={profile.companionAvatar}
-    />
+  language={profile.preferredLanguage === "zh" ? "zh" : "en"}
+  companionName={profile.companionName ?? null}
+  companionType={profile.companionType ?? null}
+  companionAvatar={profile.companionAvatar ?? null}
+  companionLevel={profile.companionLevel ?? 1}
+  companionXp={profile.companionXp ?? 0}
+/>
   );
 }

@@ -1,51 +1,21 @@
-"use client";
+interface Props {
+  name: string;
+  avatar: string | null;
+}
 
-import { CompanionBreathingAvatar } from "./CompanionBreathingAvatar";
-import { CompanionDialog } from "./CompanionDialog";
-import type { CompanionPhase } from "@/lib/companion/house-machine";
-
-type CompanionAvatarProps = {
-  phase: CompanionPhase;
-  companionName: string;
-  companionAvatar: string;
-  message: string | null;
-};
-
-export function CompanionAvatar({
-  phase,
-  companionName,
-  companionAvatar,
-  message,
-}: CompanionAvatarProps) {
- const visible =
-  phase !== "IDLE" &&
-  phase !== "RETURNING";
-  const celebrating = phase === "LEVEL_UP_CELEBRATING";
+export default function CompanionAvatar({ name, avatar }: Props) {
+  const isImage = Boolean(avatar && /^https?:\/\//i.test(avatar));
 
   return (
-    <div
-      aria-hidden={!visible}
-      className={`pointer-events-none absolute bottom-14 right-2 z-20 transition-[transform,opacity] ease-out motion-reduce:transform-none motion-reduce:transition-none ${
-        celebrating ? "duration-700" : "duration-300"
-      } ${
-        visible
-          ? celebrating
-            ? "-translate-y-2 opacity-100"
-            : "translate-y-0 opacity-100"
-          : "translate-y-8 opacity-0"
-      }`}
-    >
-      <div className="relative">
-        <CompanionDialog phase={phase} message={message} />
-
-        <CompanionBreathingAvatar
-          name={companionName}
-          avatar={companionAvatar}
-          size={96}
-          variant="idle"
-          showHalo
-        />
-      </div>
+    <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-violet-400/30 bg-gradient-to-br from-violet-500/20 to-cyan-500/10 text-5xl shadow-xl shadow-violet-950/30 sm:h-28 sm:w-28">
+      {isImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={avatar!} alt="" className="h-full w-full object-cover" />
+      ) : avatar ? (
+        <span aria-hidden="true">{avatar}</span>
+      ) : (
+        <span aria-hidden="true">{name.slice(0, 1).toUpperCase()}</span>
+      )}
     </div>
   );
 }
