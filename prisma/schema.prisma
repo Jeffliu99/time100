@@ -161,7 +161,8 @@ model Task {
 
   actual Float @default(0)
 
-  dueDate DateTime?
+  dueDate     DateTime?
+  completedAt DateTime?
 
   projectId String
 
