@@ -2,12 +2,13 @@
 
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardStats from "@/components/dashboard/DashboardStats";
-import AddTaskSection from "@/components/dashboard/AddTaskSection";
+import CreateCenter from "@/components/dashboard/CreateCenter";
 import TaskBoard from "@/components/dashboard/TaskBoard";
 import ProjectProgressSection from "@/components/dashboard/ProjectProgressSection";
+import AddProjectForm from "@/components/projects/AddProjectForm";
+import AddTaskForm from "@/components/tasks/AddTaskForm";
 import { useTime100 } from "@/hooks/useTime100";
 import { getMessages } from "@/lib/translations";
-import AddProjectSection from "@/components/dashboard/AddProjectSection";
 
 export default function Time100Dashboard() {
   const app = useTime100();
@@ -17,15 +18,18 @@ export default function Time100Dashboard() {
   const completed = app.tasks.filter((task) => task.status === "DONE").length;
   const totalEstimated = app.tasks.reduce(
     (sum, task) => sum + task.estimated,
-    0
+    0,
   );
-  const totalActual = app.tasks.reduce((sum, task) => sum + task.actual, 0);
+  const totalActual = app.tasks.reduce(
+    (sum, task) => sum + task.actual,
+    0,
+  );
 
   if (!app.ready) {
     return (
-        <main className="min-h-screen bg-slate-950 p-10 text-white">
-          Loading Time100...
-        </main>
+      <main className="min-h-screen bg-slate-950 p-10 text-white">
+        Loading Time100...
+      </main>
     );
   }
 
@@ -42,7 +46,6 @@ export default function Time100Dashboard() {
           onLanguageChange={(language) =>
             app.setPreferences({ ...app.preferences, language })
           }
-
         />
 
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
@@ -57,14 +60,28 @@ export default function Time100Dashboard() {
               },
             ]}
           />
-          <AddProjectSection
-              language={app.preferences.language}
-            />
-          <AddTaskSection
-            projects={app.projects}
+
+          <CreateCenter
             language={app.preferences.language}
-            defaultProjectId={app.projects[0]?.id ?? ""}
-            onAdd={app.addTask}
+            canCreateTask={app.projects.length > 0}
+            renderProjectForm={(close: () => void) => (
+              <AddProjectForm
+                language={app.preferences.language}
+                onCancel={close}
+              />
+            )}
+            renderTaskForm={(close: () => void) => (
+              <AddTaskForm
+                projects={app.projects}
+                language={app.preferences.language}
+                defaultProjectId={app.projects[0]?.id ?? ""}
+                disabled={app.projects.length === 0}
+                onAdd={app.addTask}
+                initiallyOpen
+                showTrigger={false}
+                onClose={close}
+              />
+            )}
           />
 
           <TaskBoard

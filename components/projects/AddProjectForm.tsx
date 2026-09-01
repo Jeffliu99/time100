@@ -1,6 +1,12 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import CreateFormShell from "@/components/ui/CreateFormShell";
+import {
+  createInputClass,
+  createLabelClass,
+} from "@/components/ui/create-form-styles";
 
 type Props = {
   language: "en" | "zh";
@@ -8,7 +14,12 @@ type Props = {
   onCreated?: () => void;
 };
 
-export default function AddProjectForm({ language, onCancel, onCreated }: Props) {
+export default function AddProjectForm({
+  language,
+  onCancel,
+  onCreated,
+}: Props) {
+  const zh = language === "zh";
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -25,50 +36,104 @@ export default function AddProjectForm({ language, onCancel, onCreated }: Props)
       const response = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: title.trim(), description: description.trim() || null }),
+        body: JSON.stringify({
+          title: title.trim(),
+          description: description.trim() || null,
+        }),
       });
 
-      if (!response.ok) throw new Error("Failed to create project");
+      const result = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(
+          result?.error ||
+            (zh ? "创建项目失败。" : "Failed to create project."),
+        );
+      }
 
       setTitle("");
       setDescription("");
       onCreated?.();
       window.location.reload();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Failed to create project");
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : zh
+            ? "创建项目失败。"
+            : "Failed to create project.",
+      );
       setSubmitting(false);
     }
   }
 
-  const zh = language === "zh";
-
   return (
-    <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
-      <div className="grid gap-3 sm:grid-cols-[1fr_1.4fr_auto]">
-        <input
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          placeholder={zh ? "项目名称" : "Project title"}
-          autoFocus
-          required
-          className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm dark:border-slate-700"
-        />
-        <input
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          placeholder={zh ? "项目说明（可选）" : "Project description (optional)"}
-          className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm dark:border-slate-700"
-        />
-        <div className="flex gap-2">
-          <button type="button" onClick={onCancel} disabled={submitting} className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold disabled:opacity-50 dark:border-slate-700">
-            {zh ? "取消" : "Cancel"}
-          </button>
-          <button type="submit" disabled={!title.trim() || submitting} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
-            {submitting ? (zh ? "保存中..." : "Saving...") : zh ? "保存" : "Save"}
-          </button>
+    <CreateFormShell
+      icon="📁"
+      title={zh ? "创建项目" : "Create project"}
+      description={zh ? "建立一个新的目标或阶段" : "Create a new goal or phase"}
+      onSubmit={handleSubmit}
+      busy={submitting}
+      maxWidth="4xl"
+    >
+      <div className="grid gap-4 md:grid-cols-2">
+        <div>
+          <label htmlFor="new-project-title" className={createLabelClass}>
+            {zh ? "项目名称" : "Project title"}
+          </label>
+          <input
+            id="new-project-title"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            placeholder={zh ? "例如：完成 Time100 MVP" : "For example: Complete Time100 MVP"}
+            autoFocus
+            required
+            maxLength={200}
+            className={createInputClass}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="new-project-description" className={createLabelClass}>
+            {zh ? "项目说明（可选）" : "Project description (optional)"}
+          </label>
+          <input
+            id="new-project-description"
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            placeholder={zh ? "项目目标或完成标准" : "Goal or completion criteria"}
+            maxLength={500}
+            className={createInputClass}
+          />
         </div>
       </div>
-      {error ? <p role="alert" className="mt-2 text-sm text-red-500">{error}</p> : null}
-    </form>
+
+      {error && (
+        <p
+          role="alert"
+          className="rounded-2xl border border-red-900 bg-red-950/50 p-3 text-sm text-red-300"
+        >
+          {error}
+        </p>
+      )}
+
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={submitting}
+          onClick={onCancel}
+        >
+          {zh ? "取消" : "Cancel"}
+        </Button>
+        <Button
+          type="submit"
+          loading={submitting}
+          loadingText={zh ? "正在保存..." : "Saving..."}
+          disabled={!title.trim()}
+        >
+          {zh ? "保存项目" : "Save project"}
+        </Button>
+      </div>
+    </CreateFormShell>
   );
 }
