@@ -1,4 +1,4 @@
 export const mobileRoutes = [
-  { key: "dashboard", href: "/", en: "Dashboard", zh: "首页", icon: "🏠" },
-  { key: "timeline", href: "/timeline", en: "Timeline", zh: "时间线", icon: "🕘" },
+  { key: "dashboard", href: "/", en: "View", zh: "查看", icon: "👁️" },
+  { key: "timeline", href: "/timeline", en: "Plan", zh: "规划", icon: "🗓️" },
 ] as const;
