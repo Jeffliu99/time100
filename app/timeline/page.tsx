@@ -63,7 +63,8 @@ export default async function TimelinePage() {
   });
 
   return (
-    <main className="mx-auto max-w-4xl p-6">
+    <main className="min-h-screen bg-slate-950 text-white">
+      <div className="mx-auto max-w-4xl p-6">
       <h1 className="mb-8 text-4xl font-bold">
         🌱 成长旅程
       </h1>
@@ -113,6 +114,7 @@ export default async function TimelinePage() {
             </div>
           ))}
         </div>
+      </div>
       </div>
     </main>
   );
