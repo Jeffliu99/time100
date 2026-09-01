@@ -14,7 +14,7 @@ export default function MobileHeader({ language }: { language: Language }) {
       </Link>
 
       <Link
-        href="/profile"
+        href="/settings/profile"
         aria-label={language === "zh" ? "个人资料" : "Profile"}
         className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-600 bg-slate-800 text-xl shadow-md transition active:scale-95"
       >
