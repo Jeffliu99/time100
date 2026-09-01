@@ -3,7 +3,6 @@
 import { type ReactNode, useCallback, useState } from "react";
 import type { Language } from "@/types";
 import MobileHeader from "./MobileHeader";
-import MobilePageTabs from "./MobilePageTabs";
 import MobileBottomNav from "./MobileBottomNav";
 import MobileCreateOverlay from "./MobileCreateOverlay";
 import MobileSwipeNavigation from "./MobileSwipeNavigation";
@@ -27,11 +26,11 @@ export default function MobileAppShell({
   return (
     <div className="h-[100dvh] overflow-hidden bg-slate-950 text-white md:h-auto md:min-h-screen md:overflow-visible">
       <MobileHeader language={language} />
-      <MobilePageTabs language={language} />
+     
       <div className="hidden md:block">{desktopHeader}</div>
 
       <MobileSwipeNavigation>
-        <main className="h-full overflow-y-auto overscroll-y-contain pt-28 pb-[calc(80px+env(safe-area-inset-bottom))] md:h-auto md:overflow-visible md:p-0">
+        <main className="h-full overflow-y-auto overscroll-y-contain pt-18 pb-[calc(80px+env(safe-area-inset-bottom))] md:h-auto md:overflow-visible md:p-0">
           {children}
         </main>
       </MobileSwipeNavigation>
