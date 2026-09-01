@@ -1,6 +1,6 @@
 # Time100 Documentation Index
 
-Generated: 2026-09-01T16:37:16.148Z
+Generated: 2026-09-01T16:57:41.037Z
 
 ---
 
@@ -46,6 +46,7 @@ Generated: 2026-09-01T16:37:16.148Z
 - docs/design/homepage.md
 - docs/design/mobile-first.md
 - docs/design/navigation-footer.md
+- docs/design/project-lifecycle.md
 - docs/design/task-lifecycle.md
 - docs/design/task-ui-system.md
 - docs/features/companion/dialog.md

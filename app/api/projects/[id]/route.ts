@@ -12,6 +12,8 @@ const allowedFields = [
   "actual",
 ] as const;
 
+const projectStatuses = new Set(["TODO", "IN_PROGRESS", "DONE"]);
+
 export async function PATCH(
   request: NextRequest,
   context: { params: Promise<{ id: string }> },
@@ -56,20 +58,94 @@ export async function PATCH(
       }
     }
 
+    if (data.status !== undefined) {
+      if (typeof data.status !== "string" || !projectStatuses.has(data.status)) {
+        return NextResponse.json(
+          { error: "Invalid project status" },
+          { status: 400 },
+        );
+      }
+    }
+
     if (data.progress !== undefined) {
-      data.progress = Number(data.progress);
+      const progress = Number(data.progress);
+
+      if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
+        return NextResponse.json(
+          { error: "Progress must be between 0 and 100" },
+          { status: 400 },
+        );
+      }
+
+      data.progress = progress;
     }
 
     if (data.priority !== undefined) {
-      data.priority = Number(data.priority);
+      const priority = Number(data.priority);
+
+      if (!Number.isFinite(priority)) {
+        return NextResponse.json(
+          { error: "Invalid project priority" },
+          { status: 400 },
+        );
+      }
+
+      data.priority = priority;
     }
 
-    if (data.estimated !== undefined) {
-      data.estimated = Number(data.estimated);
+    for (const field of ["estimated", "actual"] as const) {
+      if (data[field] !== undefined) {
+        const value = Number(data[field]);
+
+        if (!Number.isFinite(value) || value < 0) {
+          return NextResponse.json(
+            { error: `${field} must be zero or greater` },
+            { status: 400 },
+          );
+        }
+
+        data[field] = value;
+      }
     }
 
-    if (data.actual !== undefined) {
-      data.actual = Number(data.actual);
+    const wantsToComplete =
+      oldProject.status !== "DONE" && data.status === "DONE";
+
+    if (wantsToComplete) {
+      const [totalTasks, incompleteTasks] = await prisma.$transaction([
+        prisma.task.count({
+          where: {
+            projectId: oldProject.id,
+            userId: session.user.id,
+          },
+        }),
+        prisma.task.count({
+          where: {
+            projectId: oldProject.id,
+            userId: session.user.id,
+            status: { not: "DONE" },
+          },
+        }),
+      ]);
+
+      if (totalTasks === 0) {
+        return NextResponse.json(
+          { error: "A project must contain at least one task before completion" },
+          { status: 409 },
+        );
+      }
+
+      if (incompleteTasks > 0) {
+        return NextResponse.json(
+          {
+            error: "All tasks must be completed before completing the project",
+            incompleteTasks,
+          },
+          { status: 409 },
+        );
+      }
+
+      data.progress = 100;
     }
 
     const project = await prisma.project.update({
@@ -77,10 +153,7 @@ export async function PATCH(
       data,
     });
 
-    const justCompleted =
-      oldProject.status !== "DONE" && project.status === "DONE";
-
-    if (justCompleted) {
+    if (wantsToComplete) {
       const existingEvent = await prisma.growthEvent.findFirst({
         where: {
           userId: session.user.id,
@@ -143,17 +216,54 @@ export async function DELETE(
         id,
         userId: session.user.id,
       },
+      include: {
+        tasks: {
+          select: {
+            id: true,
+            status: true,
+          },
+        },
+      },
     });
 
     if (!project) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    const deletedProject = await prisma.project.delete({
-      where: { id: project.id },
+    const protectedTasks = project.tasks.filter(
+      (task) => task.status === "DOING" || task.status === "DONE",
+    );
+
+    if (protectedTasks.length > 0) {
+      return NextResponse.json(
+        {
+          error: "Projects containing active or completed tasks cannot be deleted",
+          protectedTasks: protectedTasks.length,
+        },
+        { status: 409 },
+      );
+    }
+
+    const deletedProject = await prisma.$transaction(async (transaction) => {
+      if (project.tasks.length > 0) {
+        await transaction.task.deleteMany({
+          where: {
+            projectId: project.id,
+            userId: session.user.id,
+            status: "TODO",
+          },
+        });
+      }
+
+      return transaction.project.delete({
+        where: { id: project.id },
+      });
     });
 
-    return NextResponse.json(deletedProject);
+    return NextResponse.json({
+      ...deletedProject,
+      deletedTodoTasks: project.tasks.length,
+    });
   } catch (error) {
     console.error("DELETE /api/projects/[id] failed", error);
 
