@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import CompanionWelcomeCeremony from "@/components/onboarding/CompanionWelcomeCeremony";
 import { companions, type CompanionId } from "@/lib/companions";
 
 type Language = "en" | "zh";
@@ -39,6 +40,7 @@ export default function OnboardingWizard({
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [showCeremony, setShowCeremony] = useState(false);
   const [form, setForm] = useState<FormState>({
     goal: "",
     ageGroup: "",
@@ -70,6 +72,7 @@ export default function OnboardingWizard({
 
   async function finish() {
     if (!selectedCompanion || saving) return;
+
     setSaving(true);
     setError("");
 
@@ -85,13 +88,29 @@ export default function OnboardingWizard({
         throw new Error(payload.error || "Failed to save profile");
       }
 
-      router.replace("/dashboard");
-      router.refresh();
+      setShowCeremony(true);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Failed to save profile");
+      setError(
+        cause instanceof Error ? cause.message : "Failed to save profile",
+      );
     } finally {
       setSaving(false);
     }
+  }
+
+  function completeCeremony() {
+    router.replace("/dashboard");
+    router.refresh();
+  }
+
+  if (showCeremony && selectedCompanion) {
+    return (
+      <CompanionWelcomeCeremony
+        companion={selectedCompanion}
+        language={form.preferredLanguage}
+        onComplete={completeCeremony}
+      />
+    );
   }
 
   return (
@@ -120,10 +139,14 @@ export default function OnboardingWizard({
               <div className="text-center">
                 <div className="text-6xl">👋</div>
                 <h1 className="mt-5 text-3xl font-black sm:text-4xl">
-                  {zh ? `欢迎${userName ? `，${userName}` : ""}` : `Welcome${userName ? `, ${userName}` : ""}`}
+                  {zh
+                    ? `欢迎${userName ? `，${userName}` : ""}`
+                    : `Welcome${userName ? `, ${userName}` : ""}`}
                 </h1>
                 <p className="mx-auto mt-4 max-w-md text-slate-400">
-                  {zh ? "用几十秒设置你的目标，并选择一位成长伙伴。" : "Take a moment to set your goal and choose a growth companion."}
+                  {zh
+                    ? "用几十秒设置你的目标，并选择一位成长伙伴。"
+                    : "Take a moment to set your goal and choose a growth companion."}
                 </p>
               </div>
             )}
@@ -132,7 +155,11 @@ export default function OnboardingWizard({
               <ChoiceStep title={zh ? "你的主要目标是什么？" : "What is your primary goal?"}>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {goals.map(([id, icon, en, cn]) => (
-                    <ChoiceButton key={id} selected={form.goal === id} onClick={() => update("goal", id)}>
+                    <ChoiceButton
+                      key={id}
+                      selected={form.goal === id}
+                      onClick={() => update("goal", id)}
+                    >
                       <span className="text-2xl">{icon}</span>
                       <span>{zh ? cn : en}</span>
                     </ChoiceButton>
@@ -145,7 +172,11 @@ export default function OnboardingWizard({
               <ChoiceStep title={zh ? "请选择年龄段" : "Choose your age range"}>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {ages.map((age) => (
-                    <ChoiceButton key={age} selected={form.ageGroup === age} onClick={() => update("ageGroup", age)}>
+                    <ChoiceButton
+                      key={age}
+                      selected={form.ageGroup === age}
+                      onClick={() => update("ageGroup", age)}
+                    >
                       {age === "under-18" ? (zh ? "18岁以下" : "Under 18") : age}
                     </ChoiceButton>
                   ))}
@@ -156,8 +187,18 @@ export default function OnboardingWizard({
             {step === 3 && (
               <ChoiceStep title={zh ? "选择偏好语言" : "Choose your preferred language"}>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <ChoiceButton selected={form.preferredLanguage === "en"} onClick={() => update("preferredLanguage", "en")}>English</ChoiceButton>
-                  <ChoiceButton selected={form.preferredLanguage === "zh"} onClick={() => update("preferredLanguage", "zh")}>中文</ChoiceButton>
+                  <ChoiceButton
+                    selected={form.preferredLanguage === "en"}
+                    onClick={() => update("preferredLanguage", "en")}
+                  >
+                    English
+                  </ChoiceButton>
+                  <ChoiceButton
+                    selected={form.preferredLanguage === "zh"}
+                    onClick={() => update("preferredLanguage", "zh")}
+                  >
+                    中文
+                  </ChoiceButton>
                 </div>
               </ChoiceStep>
             )}
@@ -166,8 +207,18 @@ export default function OnboardingWizard({
               <ChoiceStep title={zh ? "你目前在哪个国家？" : "Which country are you in?"}>
                 <div className="grid grid-cols-2 gap-3">
                   {countries.map((country) => (
-                    <ChoiceButton key={country} selected={form.country === country} onClick={() => update("country", country)}>
-                      {country === "United States" && zh ? "美国" : country === "China" && zh ? "中国" : country === "Other" && zh ? "其他" : country}
+                    <ChoiceButton
+                      key={country}
+                      selected={form.country === country}
+                      onClick={() => update("country", country)}
+                    >
+                      {country === "United States" && zh
+                        ? "美国"
+                        : country === "China" && zh
+                          ? "中国"
+                          : country === "Other" && zh
+                            ? "其他"
+                            : country}
                     </ChoiceButton>
                   ))}
                 </div>
@@ -175,7 +226,10 @@ export default function OnboardingWizard({
             )}
 
             {step === 5 && (
-              <ChoiceStep title={zh ? "你在哪个城市？" : "Which city are you in?"} subtitle={zh ? "可选，之后可以修改。" : "Optional. You can change this later."}>
+              <ChoiceStep
+                title={zh ? "你在哪个城市？" : "Which city are you in?"}
+                subtitle={zh ? "可选，之后可以修改。" : "Optional. You can change this later."}
+              >
                 <input
                   value={form.city}
                   onChange={(event) => update("city", event.target.value)}
@@ -187,7 +241,14 @@ export default function OnboardingWizard({
             )}
 
             {step === 6 && (
-              <ChoiceStep title={zh ? "选择你的成长伙伴" : "Choose your growth companion"} subtitle={zh ? "之后可以在个人资料中查看和更换。" : "You can review or change this later in Profile."}>
+              <ChoiceStep
+                title={zh ? "选择你的成长伙伴" : "Choose your growth companion"}
+                subtitle={
+                  zh
+                    ? "之后可以在个人资料中查看和更换。"
+                    : "You can review or change this later in Profile."
+                }
+              >
                 <div className="grid gap-4 sm:grid-cols-2">
                   {companions.map((companion) => {
                     const selected = form.companionId === companion.id;
@@ -203,11 +264,27 @@ export default function OnboardingWizard({
                             : "border-slate-700 bg-slate-950 hover:border-slate-500"
                         }`}
                       >
-                        {selected && <span className="absolute right-4 top-4 rounded-full bg-blue-500 px-2 py-1 text-xs font-bold">✓</span>}
-                        <Image src={companion.avatar} alt={companion.name} width={160} height={160} className="mx-auto h-32 w-32" />
-                        <h2 className="mt-4 text-center text-2xl font-black">{companion.name}</h2>
-                        <p className="mt-1 text-center text-sm font-semibold text-blue-300">{companion.title[form.preferredLanguage]}</p>
-                        <p className="mt-3 text-center text-sm leading-6 text-slate-400">{companion.description[form.preferredLanguage]}</p>
+                        {selected && (
+                          <span className="absolute right-4 top-4 rounded-full bg-blue-500 px-2 py-1 text-xs font-bold">
+                            ✓
+                          </span>
+                        )}
+                        <Image
+                          src={companion.avatar}
+                          alt={companion.name}
+                          width={160}
+                          height={160}
+                          className="mx-auto h-32 w-32 object-contain"
+                        />
+                        <h2 className="mt-4 text-center text-2xl font-black">
+                          {companion.name}
+                        </h2>
+                        <p className="mt-1 text-center text-sm font-semibold text-blue-300">
+                          {companion.title[form.preferredLanguage]}
+                        </p>
+                        <p className="mt-3 text-center text-sm leading-6 text-slate-400">
+                          {companion.description[form.preferredLanguage]}
+                        </p>
                       </button>
                     );
                   })}
@@ -215,23 +292,53 @@ export default function OnboardingWizard({
               </ChoiceStep>
             )}
 
-            {error && <p role="alert" className="mt-5 rounded-xl border border-red-900 bg-red-950/50 p-3 text-sm text-red-300">{error}</p>}
+            {error && (
+              <p
+                role="alert"
+                className="mt-5 rounded-xl border border-red-900 bg-red-950/50 p-3 text-sm text-red-300"
+              >
+                {error}
+              </p>
+            )}
           </div>
         </section>
 
         <footer className="flex items-center gap-3 pb-2">
           {step > 0 && (
-            <button type="button" onClick={() => setStep((value) => value - 1)} disabled={saving} className="min-h-12 rounded-xl border border-slate-700 px-5 font-semibold text-slate-300 disabled:opacity-50">
+            <button
+              type="button"
+              onClick={() => setStep((value) => value - 1)}
+              disabled={saving}
+              className="min-h-12 rounded-xl border border-slate-700 px-5 font-semibold text-slate-300 disabled:opacity-50"
+            >
               {zh ? "返回" : "Back"}
             </button>
           )}
           <button
             type="button"
-            onClick={() => (step === totalSteps - 1 ? void finish() : setStep((value) => value + 1))}
+            onClick={() =>
+              step === totalSteps - 1
+                ? void finish()
+                : setStep((value) => value + 1)
+            }
             disabled={!canContinue || saving}
             className="min-h-12 flex-1 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 font-bold shadow-lg shadow-blue-950/40 transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {saving ? (zh ? "正在保存..." : "Saving...") : step === totalSteps - 1 ? (zh ? "开始我的旅程" : "Start My Journey") : step === 0 ? (zh ? "开始设置" : "Get Started") : (zh ? "继续" : "Continue")}
+            {saving
+              ? zh
+                ? "正在保存..."
+                : "Saving..."
+              : step === totalSteps - 1
+                ? zh
+                  ? "开始我的旅程"
+                  : "Start My Journey"
+                : step === 0
+                  ? zh
+                    ? "开始设置"
+                    : "Get Started"
+                  : zh
+                    ? "继续"
+                    : "Continue"}
           </button>
         </footer>
       </div>
@@ -239,7 +346,15 @@ export default function OnboardingWizard({
   );
 }
 
-function ChoiceStep({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+function ChoiceStep({
+  title,
+  subtitle,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <h1 className="text-2xl font-black sm:text-3xl">{title}</h1>
@@ -249,14 +364,24 @@ function ChoiceStep({ title, subtitle, children }: { title: string; subtitle?: s
   );
 }
 
-function ChoiceButton({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: React.ReactNode }) {
+function ChoiceButton({
+  selected,
+  onClick,
+  children,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
       className={`flex min-h-20 items-center justify-center gap-2 rounded-2xl border p-4 text-center font-semibold transition ${
-        selected ? "border-blue-400 bg-blue-500/10 ring-2 ring-blue-400" : "border-slate-700 bg-slate-950 hover:border-slate-500"
+        selected
+          ? "border-blue-400 bg-blue-500/10 ring-2 ring-blue-400"
+          : "border-slate-700 bg-slate-950 hover:border-slate-500"
       }`}
     >
       {children}

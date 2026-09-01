@@ -203,7 +203,7 @@ model User {
   houseLevel              Int       @default(1)
 
   memories CompanionMemory[]
-
+  moodLogs MoodLog[]
   accounts Account[]
   sessions Session[]
 
@@ -294,4 +294,22 @@ model CompanionMemory {
   @@index([type])
   @@index([importance])
   @@index([createdAt])
+}
+
+model MoodLog {
+  id        String   @id @default(cuid())
+  userId    String
+  mood      MoodType
+  note      String?  @db.Text
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+enum MoodType {
+  HAPPY
+  CALM
+  MOTIVATED
 }

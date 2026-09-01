@@ -1,18 +1,80 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { CompanionHouse } from "./CompanionHouse";
 
-const HIDDEN_ROUTES = new Set(["/", "/login", "/onboarding", "/onboarding/companion"]);
+type CompanionProfile = {
+  profileCompleted: boolean;
+  companionSetupCompleted?: boolean;
+  companionName: string | null;
+  companionAvatar: string | null;
+};
+
+const HIDDEN_ROUTES = new Set([
+  "/",
+  "/login",
+  "/onboarding",
+  "/onboarding/companion",
+]);
 
 export function CompanionHouseGate() {
   const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
+  const [profile, setProfile] =
+    useState<CompanionProfile | null>(null);
 
-  if (status !== "authenticated" || !session?.user || HIDDEN_ROUTES.has(pathname)) {
+  useEffect(() => {
+    if (status !== "authenticated") {
+      setProfile(null);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function loadProfile() {
+      try {
+        const response = await fetch("/api/profile", {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+        setProfile(data);
+      } catch (error) {
+        if (
+          error instanceof DOMException &&
+          error.name === "AbortError"
+        ) {
+          return;
+        }
+
+        console.error("Unable to load companion profile", error);
+      }
+    }
+
+    void loadProfile();
+
+    return () => controller.abort();
+  }, [status]);
+
+  if (
+    status !== "authenticated" ||
+    HIDDEN_ROUTES.has(pathname) ||
+    !profile?.profileCompleted ||
+    !profile.companionName ||
+    !profile.companionAvatar
+  ) {
     return null;
   }
 
-  return <CompanionHouse />;
+  return (
+    <CompanionHouse
+      companionName={profile.companionName}
+      companionAvatar={profile.companionAvatar}
+    />
+  );
 }

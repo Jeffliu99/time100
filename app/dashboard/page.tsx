@@ -1,12 +1,12 @@
-import { auth } from "@/auth";
+import { requireProfile } from "@/lib/auth-guard";
 import { redirect } from "next/navigation";
 import Time100Dashboard from "@/components/dashboard/Time100Dashboard";
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const { user } = await requireProfile();
 
-  if (!session?.user?.id) {
-    redirect("/login");
+  if (!user.profileCompleted) {
+    redirect("/onboarding");
   }
 
   return <Time100Dashboard />;
