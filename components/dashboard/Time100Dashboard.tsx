@@ -2,11 +2,9 @@
 
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardStats from "@/components/dashboard/DashboardStats";
-import CreateCenter from "@/components/dashboard/CreateCenter";
 import TaskBoard from "@/components/dashboard/TaskBoard";
 import ProjectProgressSection from "@/components/dashboard/ProjectProgressSection";
-import AddProjectForm from "@/components/projects/AddProjectForm";
-import AddTaskForm from "@/components/tasks/AddTaskForm";
+import CreateFlow from "@/components/dashboard/create-center/CreateFlow";
 import MobileAppShell from "@/components/mobile/MobileAppShell";
 import { useTime100 } from "@/hooks/useTime100";
 import { getMessages } from "@/lib/translations";
@@ -48,48 +46,21 @@ export default function Time100Dashboard() {
     />
   );
 
-  const renderCreateCenter = (finish?: () => void) => (
-    <CreateCenter
-      language={app.preferences.language}
-      canCreateTask={app.projects.length > 0}
-      renderProjectForm={(close: () => void) => (
-        <AddProjectForm
-          language={app.preferences.language}
-          onCancel={() => {
-            close();
-            finish?.();
-          }}
-          onCreated={finish}
-        />
-      )}
-      renderTaskForm={(close: () => void) => (
-        <AddTaskForm
-          projects={app.projects}
-          language={app.preferences.language}
-          defaultProjectId={app.projects[0]?.id ?? ""}
-          disabled={app.projects.length === 0}
-          onAdd={app.addTask}
-          initiallyOpen
-          showTrigger={false}
-          onClose={() => {
-            close();
-            finish?.();
-          }}
-        />
-      )}
-    />
-  );
-
   return (
     <main className="dark">
       <MobileAppShell
         language={app.preferences.language}
         desktopHeader={desktopHeader}
-        createContent={() => (
-  <div className="p-4 text-white">
-    测试成功
-  </div>
-)}
+        createContent={(close: () => void) => (
+          <CreateFlow
+            mode="embedded"
+            language={app.preferences.language}
+            projects={app.projects}
+            defaultProjectId={app.projects[0]?.id ?? ""}
+            onAddTask={app.addTask}
+            onFinished={close}
+          />
+        )}
       >
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8">
           <DashboardStats
@@ -104,8 +75,15 @@ export default function Time100Dashboard() {
             ]}
           />
 
-          {/* Desktop keeps the inline Create Center. Mobile uses the center FAB. */}
-          <div className="hidden md:block">{renderCreateCenter()}</div>
+          <div className="hidden md:block">
+            <CreateFlow
+              mode="desktop"
+              language={app.preferences.language}
+              projects={app.projects}
+              defaultProjectId={app.projects[0]?.id ?? ""}
+              onAddTask={app.addTask}
+            />
+          </div>
 
           <TaskBoard
             projects={app.projects}
