@@ -14,13 +14,24 @@ import { getMessages } from "@/lib/translations";
 export default function Time100Dashboard() {
   const app = useTime100();
   const t = getMessages(app.preferences.language);
+
   const openTasks = app.tasks.filter((task) => task.status !== "DONE").length;
-  const completed = app.tasks.filter((task) => task.status === "DONE").length;
-  const totalEstimated = app.tasks.reduce((sum, task) => sum + task.estimated, 0);
-  const totalActual = app.tasks.reduce((sum, task) => sum + task.actual, 0);
+  const completedTasks = app.tasks.filter((task) => task.status === "DONE").length;
+  const totalEstimated = app.tasks.reduce(
+    (sum, task) => sum + task.estimated,
+    0,
+  );
+  const totalActual = app.tasks.reduce(
+    (sum, task) => sum + task.actual,
+    0,
+  );
 
   if (!app.ready) {
-    return <main className="min-h-screen bg-slate-950 p-10 text-white">Loading Time100...</main>;
+    return (
+      <main className="min-h-screen bg-slate-950 p-10 text-white">
+        Loading Time100...
+      </main>
+    );
   }
 
   const desktopHeader = (
@@ -37,38 +48,60 @@ export default function Time100Dashboard() {
     />
   );
 
+  const renderCreateCenter = (finish?: () => void) => (
+    <CreateCenter
+      language={app.preferences.language}
+      canCreateTask={app.projects.length > 0}
+      renderProjectForm={(close: () => void) => (
+        <AddProjectForm
+          language={app.preferences.language}
+          onCancel={() => {
+            close();
+            finish?.();
+          }}
+          onCreated={finish}
+        />
+      )}
+      renderTaskForm={(close: () => void) => (
+        <AddTaskForm
+          projects={app.projects}
+          language={app.preferences.language}
+          defaultProjectId={app.projects[0]?.id ?? ""}
+          disabled={app.projects.length === 0}
+          onAdd={app.addTask}
+          initiallyOpen
+          showTrigger={false}
+          onClose={() => {
+            close();
+            finish?.();
+          }}
+        />
+      )}
+    />
+  );
+
   return (
     <main className="dark">
-      <MobileAppShell language={app.preferences.language} desktopHeader={desktopHeader}>
+      <MobileAppShell
+        language={app.preferences.language}
+        desktopHeader={desktopHeader}
+        createContent={(close: () => void) => renderCreateCenter(close)}
+      >
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8">
           <DashboardStats
             items={[
               { label: t.projects, value: app.projects.length },
               { label: t.openTasks, value: openTasks },
-              { label: t.completed, value: completed },
-              { label: t.remaining, value: `${Math.max(totalEstimated - totalActual, 0)}h` },
+              { label: t.completed, value: completedTasks },
+              {
+                label: t.remaining,
+                value: `${Math.max(totalEstimated - totalActual, 0)}h`,
+              },
             ]}
           />
 
-          <CreateCenter
-            language={app.preferences.language}
-            canCreateTask={app.projects.length > 0}
-            renderProjectForm={(close: () => void) => (
-              <AddProjectForm language={app.preferences.language} onCancel={close} />
-            )}
-            renderTaskForm={(close: () => void) => (
-              <AddTaskForm
-                projects={app.projects}
-                language={app.preferences.language}
-                defaultProjectId={app.projects[0]?.id ?? ""}
-                disabled={app.projects.length === 0}
-                onAdd={app.addTask}
-                initiallyOpen
-                showTrigger={false}
-                onClose={close}
-              />
-            )}
-          />
+          {/* Desktop keeps the inline Create Center. Mobile uses the center FAB. */}
+          <div className="hidden md:block">{renderCreateCenter()}</div>
 
           <TaskBoard
             projects={app.projects}
