@@ -22,7 +22,13 @@ export function useTime100() {
         const dashboard = await fetchDashboardData(controller.signal);
 
         if (!mounted) return;
-
+        setPreferences((current) => ({
+                  ...current,
+                  language:
+                    dashboard.user.preferredLanguage === "zh"
+                      ? "zh"
+                      : "en",
+                }));
         setProjects(
             dashboard.projects.map((project) => ({
               ...project,
