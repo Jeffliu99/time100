@@ -36,13 +36,6 @@ export default function Time100Dashboard() {
     <DashboardHeader
       preferences={app.preferences}
       slogan={t.slogan}
-      canUndo={app.canUndo}
-      canRedo={app.canRedo}
-      onUndo={app.undo}
-      onRedo={app.redo}
-      onLanguageChange={(language) =>
-        app.setPreferences({ ...app.preferences, language })
-      }
     />
   );
 

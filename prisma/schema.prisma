@@ -271,7 +271,7 @@ model GrowthEvent {
   description String?
 
   importance Int @default(1)
-
+  appreciation Int @default(0)
   createdAt DateTime @default(now())
 }
 

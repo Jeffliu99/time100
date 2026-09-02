@@ -8,12 +8,6 @@ import type { Language, UserPreferences,} from "@/types";
 
 interface Props {
   preferences: UserPreferences;
-  onLanguageChange: (language: Language) => void;
- 
-  onUndo: () => Promise<void> | void;
-  onRedo: () => Promise<void> | void;
-  canUndo: boolean;
-  canRedo: boolean;
   slogan: string;
 }
 
@@ -22,13 +16,9 @@ const controlClass =
 
 export default function DashboardHeader({
   preferences,
-  onLanguageChange,
-  onUndo,
-  onRedo,
-  canUndo,
-  canRedo,
   slogan,
-}: Props) {
+}: Props)
+ {
   const { data: session, status } = useSession();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -76,18 +66,6 @@ export default function DashboardHeader({
         </Link>
 
         <div className="flex flex-wrap items-center justify-end gap-2">
-          <button type="button" onClick={() => void onUndo()} disabled={!canUndo} className={controlClass}>
-            {isChinese ? "撤销" : "Undo"}
-          </button>
-
-          <button type="button" onClick={() => void onRedo()} disabled={!canRedo} className={controlClass}>
-            {isChinese ? "重做" : "Redo"}
-          </button>
-
-          <button type="button" onClick={() => onLanguageChange(isChinese ? "en" : "zh")} className={controlClass}>
-            {isChinese ? "English" : "中文"}
-          </button>
-
           <Link href="/timeline" className={controlClass}>
             {isChinese ? "时间轴" : "Timeline"}
           </Link>
