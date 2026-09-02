@@ -85,7 +85,11 @@ export default function Time100Dashboard() {
       <MobileAppShell
         language={app.preferences.language}
         desktopHeader={desktopHeader}
-        createContent={(close: () => void) => renderCreateCenter(close)}
+        createContent={() => (
+  <div className="p-4 text-white">
+    测试成功
+  </div>
+)}
       >
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8">
           <DashboardStats
