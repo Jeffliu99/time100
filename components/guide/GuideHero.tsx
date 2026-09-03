@@ -15,7 +15,7 @@ export default function GuideHero({ copy }: { copy: GuideCopy["hero"] }) {
           {copy.description}
         </p>
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-          <Link href="/" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-500">
+          <Link href="dashboard/" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-500">
             {copy.dashboard} →
           </Link>
           <Link href="/companion" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-600 bg-slate-900/70 px-5 text-sm font-bold text-slate-100 transition hover:bg-slate-800">
