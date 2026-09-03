@@ -20,12 +20,13 @@ export default function PublicHeader({
   const copy = getHomeCopy(language).nav;
 
   const links = [
-    ["#workflow", copy.workflow],
-    ["#features", copy.features],
-    ["#compare", copy.compare],
-    ["#pricing", copy.pricing],
-    ["#faq", copy.faq],
-  ] as const;
+  ["/about", language === "zh" ? "关于" : "About"],
+  ["#workflow", copy.workflow],
+  ["#features", copy.features],
+  ["#compare", copy.compare],
+  ["#pricing", copy.pricing],
+  ["#faq", copy.faq],
+];
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/90 text-white backdrop-blur-xl">
