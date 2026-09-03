@@ -10,12 +10,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.replace("/");
-      router.refresh();
-    }
-  }, [router, status]);
+ useEffect(() => {
+  if (status === "authenticated") {
+    router.replace("/dashboard");
+    router.refresh();
+  }
+}, [router, status]);
 
   async function handleGoogleLogin() {
     if (loading) return;
@@ -25,7 +25,7 @@ export default function LoginPage() {
 
     try {
       await signIn("google", {
-        callbackUrl: "/",
+        callbackUrl: "/dashboard",
       });
     } catch (cause) {
       console.error("Google sign-in failed", cause);
