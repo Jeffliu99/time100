@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { CompanionHouseGate } from "@/components/companion/CompanionHouseGate";
-import { preloadCompanionSounds} from "@/lib/audio/companion-audio";
+
 import Providers from "@/components/providers";
-import { AudioBootstrap }
-  from "@/components/audio/AudioBootstrap";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,7 +13,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
 
 export const metadata: Metadata = {
   title: "Time100",
@@ -30,16 +26,12 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en" 
-      data-scroll-behavior="smooth" 
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Providers>
-          <AudioBootstrap />
           {children}
-
-          <CompanionHouseGate />
         </Providers>
       </body>
     </html>

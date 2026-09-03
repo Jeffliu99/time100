@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import  CompanionHouse  from "./CompanionHouse";
 
 type CompanionProfile = {
   profileCompleted: boolean;
@@ -77,14 +76,5 @@ export function CompanionHouseGate() {
     return null;
   }
 
-  return (
-    <CompanionHouse
-  language={profile.preferredLanguage === "zh" ? "zh" : "en"}
-  companionName={profile.companionName ?? null}
-  companionType={profile.companionType ?? null}
-  companionAvatar={profile.companionAvatar ?? null}
-  companionLevel={profile.companionLevel ?? 1}
-  companionXp={profile.companionXp ?? 0}
-/>
-  );
+return null;
 }

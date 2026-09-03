@@ -4,17 +4,33 @@ interface Props {
 }
 
 export default function CompanionAvatar({ name, avatar }: Props) {
-  const isImage = Boolean(avatar && /^https?:\/\//i.test(avatar));
+  let imageSrc: string | null = null;
+
+  if (avatar) {
+    if (/^https?:\/\//i.test(avatar)) {
+      imageSrc = avatar;
+    } else if (avatar.startsWith("/")) {
+      imageSrc = avatar;
+    } else if (avatar.includes("/")) {
+      imageSrc = `/${avatar.replace(/^\/+/, "")}`;
+    } else {
+      imageSrc = `/companions/${avatar}/avatar.png`;
+    }
+  }
 
   return (
-    <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-violet-400/30 bg-gradient-to-br from-violet-500/20 to-cyan-500/10 text-5xl shadow-xl shadow-violet-950/30 sm:h-28 sm:w-28">
-      {isImage ? (
+    <div className="mx-auto flex h-36 w-36 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-violet-400/30 bg-gradient-to-br from-violet-500/20 to-cyan-500/10 shadow-xl shadow-violet-950/30 sm:h-44 sm:w-44 lg:mx-0 lg:h-64 lg:w-64">
+      {imageSrc ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={avatar!} alt="" className="h-full w-full object-cover" />
-      ) : avatar ? (
-        <span aria-hidden="true">{avatar}</span>
+        <img
+          src={imageSrc}
+          alt={name}
+          className="h-full w-full object-cover"
+        />
       ) : (
-        <span aria-hidden="true">{name.slice(0, 1).toUpperCase()}</span>
+        <span className="text-5xl font-black text-white" aria-hidden="true">
+          {name.slice(0, 1).toUpperCase()}
+        </span>
       )}
     </div>
   );
