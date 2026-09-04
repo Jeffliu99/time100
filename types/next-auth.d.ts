@@ -2,6 +2,7 @@ import "next-auth";
 
 declare module "next-auth" {
   interface User {
+    role?: "USER" | "AUTHOR" | "EDITOR" | "ADMIN";
     displayName?: string | null;
     companionName?: string | null;
   }
@@ -9,6 +10,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
+      role?: "USER" | "AUTHOR" | "EDITOR" | "ADMIN";
       displayName?: string | null;
       companionName?: string | null;
       name?: string | null;
