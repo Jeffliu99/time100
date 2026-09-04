@@ -174,6 +174,12 @@ model Task {
 
   @@index([userId])
 }
+enum UserRole {
+  USER
+  AUTHOR
+  EDITOR
+  ADMIN
+}
 
 model User {
   id            String    @id @default(cuid())
@@ -181,7 +187,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-
+  role UserRole @default(USER)
   displayName String?
 
   // Profile
@@ -270,9 +276,9 @@ model GrowthEvent {
 
   description String?
 
-  importance Int @default(1)
-  appreciation Int @default(0)
-  createdAt DateTime @default(now())
+  importance   Int      @default(1)
+  appreciation Int      @default(0)
+  createdAt    DateTime @default(now())
 }
 
 model CompanionMemory {
@@ -313,4 +319,77 @@ enum MoodType {
   HAPPY
   CALM
   MOTIVATED
+}
+
+model Time100BlogCategory {
+  id        String   @id @default(uuid())
+  slug      String   @unique @db.VarChar(120)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  translations Time100BlogCategoryTranslation[]
+  posts        Time100BlogPost[]
+
+  @@map("time100_blog_categories")
+}
+
+model Time100BlogCategoryTranslation {
+  id          String   @id @default(uuid())
+  categoryId  String   @map("category_id")
+  language    String   @db.VarChar(10)
+  name        String   @db.VarChar(100)
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  category Time100BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, language])
+  @@map("time100_blog_category_translations")
+}
+
+model Time100BlogPost {
+  id             String    @id @default(uuid())
+  categoryId     String?   @map("category_id")
+  canonicalGroup String?   @map("canonical_group") @db.VarChar(120)
+  status         String    @default("draft") @db.VarChar(20)
+  viewCount      Int       @default(0) @map("view_count")
+  currentVersion Int       @default(1) @map("current_version")
+  publishedAt    DateTime? @map("published_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  category     Time100BlogCategory?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  translations Time100BlogPostTranslation[]
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([publishedAt])
+  @@map("time100_blog_posts")
+}
+
+model Time100BlogPostTranslation {
+  id             String    @id @default(uuid())
+  postId         String    @map("post_id")
+  language       String    @db.VarChar(10)
+  slug           String    @db.VarChar(120)
+  title          String    @db.VarChar(255)
+  excerpt        String?
+  content        Json
+  featuredImage  String?   @map("featured_image")
+  featuredImageAlt String? @map("featured_image_alt")
+  imagePrompt String? @map("image_prompt")
+  seoTitle       String?   @map("seo_title") @db.VarChar(255)
+  seoDescription String?   @map("seo_description")
+  publishedAt    DateTime? @map("published_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  post Time100BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, language])
+  @@unique([language, slug])
+  @@index([language, publishedAt])
+  @@map("time100_blog_post_translations")
 }
