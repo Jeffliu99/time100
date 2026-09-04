@@ -55,16 +55,7 @@ export default function Time100Dashboard() {
        * This keeps creation usable after AppShell moves to the parent layout.
        * Desktop uses the dropdown; mobile uses the embedded options.
        */}
-      <div className="mt-6 md:hidden">
-        <CreateFlow
-          mode="embedded"
-          language={language}
-          projects={app.projects}
-          defaultProjectId={app.projects[0]?.id ?? ""}
-          onAddTask={app.addTask}
-        />
-      </div>
-
+      
       <div className="hidden md:block">
         <CreateFlow
           mode="desktop"
