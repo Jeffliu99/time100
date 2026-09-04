@@ -1,6 +1,6 @@
 # Time100 Documentation Index
 
-Generated: 2026-09-04T00:08:00.473Z
+Generated: 2026-09-04T03:53:13.684Z
 
 ---
 
@@ -38,9 +38,11 @@ Generated: 2026-09-04T00:08:00.473Z
 - docs/account/login-providers.md
 - docs/account/profile-onboarding.md
 - docs/api-spec.md
+- docs/architecture/time100-blog.md
 - docs/archive/roadmap-2026-08.md
 - docs/archive/time100-design-spec-v0.md
 - docs/changelog.md
+- docs/copilot-context.md
 - docs/database-design.md
 - docs/design/button-system.md
 - docs/design/homepage.md
@@ -77,6 +79,7 @@ Generated: 2026-09-04T00:08:00.473Z
 - docs/releases/README_Time100_v0.2.1.md
 - docs/security/auth-security.md
 - docs/security/privacy-data.md
+- docs/time100-project-context.md
 
 
 ---
