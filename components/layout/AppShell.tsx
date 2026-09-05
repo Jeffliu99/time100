@@ -15,14 +15,14 @@ import MobileBottomNav from "@/components/mobile/MobileBottomNav";
 import MobileCreateOverlay from "@/components/mobile/MobileCreateOverlay";
 import MobileHeader from "@/components/mobile/MobileHeader";
 import MobileSwipeNavigation from "@/components/mobile/MobileSwipeNavigation";
-import {
-  Time100Provider,
-} from "@/components/providers/Time100Provider";
+import { Time100Provider } from "@/components/providers/Time100Provider";
 import type { Language } from "@/types";
 
 interface AppShellProps {
   language: Language;
   companionName?: string | null;
+  userName?: string | null;
+  userImage?: string | null;
   children: ReactNode;
   enableSwipeNavigation?: boolean;
 }
@@ -40,6 +40,8 @@ export default function AppShell(props: AppShellProps) {
 function AppShellContent({
   language,
   companionName,
+  userName,
+  userImage,
   children,
   enableSwipeNavigation = true,
 }: AppShellProps) {
@@ -48,10 +50,7 @@ function AppShellContent({
   const { open, openCreate, closeCreate } = useCreate();
 
   useEffect(() => {
-    if (pathname !== "/dashboard" || searchParams.get("create") !== "1") {
-      return;
-    }
-
+    if (pathname !== "/dashboard" || searchParams.get("create") !== "1") return;
     openCreate();
     window.history.replaceState(null, "", "/dashboard");
   }, [openCreate, pathname, searchParams]);
@@ -70,12 +69,11 @@ function AppShellContent({
       <MobileHeader
         language={language}
         companionName={companionName}
+        userName={userName}
+        userImage={userImage}
       />
 
-      <AppHeader
-        language={language}
-        companionName={companionName}
-      />
+      <AppHeader language={language} companionName={companionName} />
 
       {enableSwipeNavigation ? (
         <MobileSwipeNavigation>{pageContent}</MobileSwipeNavigation>
@@ -85,11 +83,7 @@ function AppShellContent({
 
       <MobileBottomNav language={language} />
 
-      <MobileCreateOverlay
-        open={open}
-        language={language}
-        onClose={closeCreate}
-      >
+      <MobileCreateOverlay open={open} language={language} onClose={closeCreate}>
         <CreatePanel language={language} />
       </MobileCreateOverlay>
 
