@@ -4,8 +4,12 @@ import DashboardStats from "@/components/dashboard/DashboardStats";
 import TaskBoard from "@/components/dashboard/TaskBoard";
 import ProjectProgressSection from "@/components/dashboard/ProjectProgressSection";
 import CreateFlow from "@/components/dashboard/create-center/CreateFlow";
-import { useTime100 } from "@/hooks/useTime100";
+
 import { getMessages } from "@/lib/translations";
+import {
+  useTime100Context,
+} from "@/components/providers/Time100Provider";
+
 
 /**
  * Dashboard content only.
@@ -13,7 +17,7 @@ import { getMessages } from "@/lib/translations";
  * app/(protected)/layout.tsx -> AppShell
  */
 export default function Time100Dashboard() {
-  const app = useTime100();
+  const app = useTime100Context();
   const language = app.preferences.language;
   const t = getMessages(language);
 
@@ -55,7 +59,7 @@ export default function Time100Dashboard() {
        * This keeps creation usable after AppShell moves to the parent layout.
        * Desktop uses the dropdown; mobile uses the embedded options.
        */}
-      
+
       <div className="hidden md:block">
         <CreateFlow
           mode="desktop"

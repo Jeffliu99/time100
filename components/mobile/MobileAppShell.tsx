@@ -37,8 +37,6 @@ export default function MobileAppShell({
 
       <MobileBottomNav
         language={language}
-        createOpen={createOpen}
-        onCreate={() => setCreateOpen((value) => !value)}
       />
 
       {createContent && (
