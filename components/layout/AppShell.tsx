@@ -1,42 +1,60 @@
 "use client";
 
-import { type ReactNode, useCallback, useState } from "react";
-import type { Language } from "@/types";
+import type { ReactNode } from "react";
+import { useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
-import AppHeader from "@/components/layout/AppHeader";
+import {
+  CreateProvider,
+  useCreate,
+} from "@/components/create/CreateContext";
+import CreatePanel from "@/components/create/CreatePanel";
 import AppFooter from "@/components/layout/AppFooter";
-import MobileHeader from "@/components/mobile/MobileHeader";
+import AppHeader from "@/components/layout/AppHeader";
 import MobileBottomNav from "@/components/mobile/MobileBottomNav";
 import MobileCreateOverlay from "@/components/mobile/MobileCreateOverlay";
+import MobileHeader from "@/components/mobile/MobileHeader";
 import MobileSwipeNavigation from "@/components/mobile/MobileSwipeNavigation";
+import {
+  Time100Provider,
+} from "@/components/providers/Time100Provider";
+import type { Language } from "@/types";
 
 interface AppShellProps {
   language: Language;
   companionName?: string | null;
   children: ReactNode;
-
-  /**
-   * Optional mobile Create content.
-   * When omitted, the center Create button remains visible but does nothing.
-   */
-  createContent?: (close: () => void) => ReactNode;
-
-  /** Disable swipe navigation for pages containing horizontal gestures. */
   enableSwipeNavigation?: boolean;
 }
 
-export default function AppShell({
+export default function AppShell(props: AppShellProps) {
+  return (
+    <CreateProvider>
+      <Time100Provider>
+        <AppShellContent {...props} />
+      </Time100Provider>
+    </CreateProvider>
+  );
+}
+
+function AppShellContent({
   language,
   companionName,
   children,
-  createContent,
   enableSwipeNavigation = true,
 }: AppShellProps) {
-  const [createOpen, setCreateOpen] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { open, openCreate, closeCreate } = useCreate();
 
-  const closeCreate = useCallback(() => {
-    setCreateOpen(false);
-  }, []);
+  useEffect(() => {
+    if (pathname !== "/dashboard" || searchParams.get("create") !== "1") {
+      return;
+    }
+
+    openCreate();
+    window.history.replaceState(null, "", "/dashboard");
+  }, [openCreate, pathname, searchParams]);
 
   const pageContent = (
     <main
@@ -49,48 +67,32 @@ export default function AppShell({
 
   return (
     <div className="h-[100dvh] overflow-hidden bg-slate-950 text-white md:h-auto md:min-h-screen md:overflow-visible">
-      {/* Mobile: compact fixed header */}
       <MobileHeader
         language={language}
         companionName={companionName}
       />
 
-      {/* Tablet/Desktop: responsive top navigation */}
       <AppHeader
         language={language}
         companionName={companionName}
       />
 
-      {/* One shared content tree for all screen sizes */}
       {enableSwipeNavigation ? (
         <MobileSwipeNavigation>{pageContent}</MobileSwipeNavigation>
       ) : (
         pageContent
       )}
 
-      {/* Mobile: fixed View / Create / Plan navigation */}
-      <MobileBottomNav
+      <MobileBottomNav language={language} />
+
+      <MobileCreateOverlay
+        open={open}
         language={language}
-        createOpen={createOpen}
-        onCreate={() => {
-          if (createContent) {
-            setCreateOpen((current) => !current);
-          }
-        }}
-      />
+        onClose={closeCreate}
+      >
+        <CreatePanel language={language} />
+      </MobileCreateOverlay>
 
-      {/* Mobile Create panel */}
-      {createContent && (
-        <MobileCreateOverlay
-          open={createOpen}
-          language={language}
-          onClose={closeCreate}
-        >
-          {createContent(closeCreate)}
-        </MobileCreateOverlay>
-      )}
-
-      {/* Tablet/Desktop footer */}
       <AppFooter language={language} />
     </div>
   );
